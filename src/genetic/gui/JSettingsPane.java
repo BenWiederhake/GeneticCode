@@ -40,7 +40,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.border.TitledBorder;
 
 public class JSettingsPane extends JPanel implements Observer {
@@ -52,12 +51,12 @@ public class JSettingsPane extends JPanel implements Observer {
 
     private final JLabel stepLabel;
 
-    private final JTable programTable;
+    private final JProgramStatTable programStatTable;
 
     public JSettingsPane(final Field field, final boolean mutable) {
         this.field = field;
         this.stepLabel = new JLabel("0");
-        this.programTable = new JTable(field.getProgramStatistics());
+        this.programStatTable = new JProgramStatTable(field);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -71,7 +70,7 @@ public class JSettingsPane extends JPanel implements Observer {
             null,
             null));
 
-        final JScrollPane scrollTable = new JScrollPane(programTable);
+        final JScrollPane scrollTable = new JScrollPane(programStatTable);
         scrollTable.setPreferredSize(new Dimension(
             Integer.MIN_VALUE,
             PREFERRED_WIDTH));

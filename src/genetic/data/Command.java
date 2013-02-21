@@ -35,7 +35,7 @@ package genetic.data;
  */
 public enum Command {
     /** Move two steps forward. */
-    DOUBLEMOVE('M') {
+    DOUBLEMOVE {
         @Override
         public void execute(final Field field, final Entity entity) {
             entity.move(field);
@@ -44,7 +44,7 @@ public enum Command {
     },
 
     /** Move one step foward. */
-    MOVE('m') {
+    MOVE {
         @Override
         public void execute(final Field field, final Entity entity) {
             entity.move(field);
@@ -52,7 +52,7 @@ public enum Command {
     },
 
     /** Turn left. */
-    LEFT('<') {
+    LEFT {
         @Override
         public void execute(final Field field, final Entity entity) {
             entity.left();
@@ -60,7 +60,7 @@ public enum Command {
     },
 
     /** Turn right. */
-    RIGHT('>') {
+    RIGHT {
         @Override
         public void execute(final Field field, final Entity entity) {
             entity.right();
@@ -68,7 +68,7 @@ public enum Command {
     },
 
     /** Do nothing. */
-    SLEEP('s') {
+    SLEEP {
         @Override
         public void execute(final Field field, final Entity entity) {
         }
@@ -83,18 +83,6 @@ public enum Command {
         return values()[Parameter.getNextRandomInt(values().length)];
     }
 
-    /** This Command's character representation. */
-    private final char c;
-
-    /**
-     * Create a new Command with the given character represenation.
-     * 
-     * @param c character representation
-     */
-    private Command(final char c) {
-        this.c = c;
-    }
-
     /**
      * Execute this command for the given entity on the given field.
      * 
@@ -102,13 +90,4 @@ public enum Command {
      * @param entity {@link Entity}
      */
     public abstract void execute(Field field, Entity entity);
-
-    /**
-     * Returns this Command's character representation.
-     * 
-     * @return this Command's character representation
-     */
-    public final char getChar() {
-        return c;
-    }
 }

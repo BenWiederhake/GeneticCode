@@ -28,8 +28,6 @@
 
 package genetic.data;
 
-import genetic.gui.ProgramStatistic;
-
 import java.awt.Point;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -43,8 +41,6 @@ public class Field extends Observable {
 
     private final Vector<Entity> entities;
 
-    private final ProgramStatistic statistics;
-
     private int timeUntilAddRandomGrass;
 
     private int step;
@@ -53,12 +49,10 @@ public class Field extends Observable {
         this.grass = new HashSet<Point>();
         this.wall = new HashSet<Point>();
         this.entities = new Vector<Entity>();
-        this.statistics = new ProgramStatistic();
     }
 
     public final void addEntity(final Entity e) {
         entities.add(e);
-        statistics.addEntity(e);
     }
 
     public final void addRandomGrass() {
@@ -71,10 +65,6 @@ public class Field extends Observable {
 
     public final Iterator<Point> getGrassIterator() {
         return new HashSet<Point>(grass).iterator();
-    }
-
-    public final ProgramStatistic getProgramStatistics() {
-        return statistics;
     }
 
     public final Point getRandomValidPoint() {
@@ -174,7 +164,6 @@ public class Field extends Observable {
             e.step(this);
             if (e.getHealth() <= 0) {
                 dead.add(e);
-                statistics.removeEntity(e);
             } else if (e.getHealth() > Parameter.REPRODUCTION_HP.getValue()) {
                 born.add(e);
             }
@@ -186,7 +175,6 @@ public class Field extends Observable {
             addEntity(e.replicate(this));
         }
 
-        statistics.update();
         setChanged();
         notifyObservers();
     }

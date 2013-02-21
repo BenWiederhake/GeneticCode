@@ -8,6 +8,9 @@
 	<target name="compile">
 		<mkdir dir="bin" />
 		<javac srcdir="src" destdir="bin" includeantruntime="false" />
+		<copy todir="bin/genetic/res">
+			<fileset dir="src/genetic/res" includes="*" />
+		</copy>
 	</target>
 
 	<target name="jar" depends="compile">

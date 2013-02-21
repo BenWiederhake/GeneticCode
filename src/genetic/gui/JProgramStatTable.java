@@ -28,36 +28,53 @@
 
 package genetic.gui;
 
+import genetic.Genetic;
+import genetic.data.Command;
 import genetic.data.Entity;
+import genetic.data.Field;
 import genetic.data.Program;
 
+import java.awt.Component;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Vector;
 
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-// TODO remove this class, it's ugly.
-public class ProgramStatistic implements TableModel {
-    private final HashMap<Program, Integer> data;
+public class JProgramStatTable
+extends JTable
+implements TableCellRenderer, TableModel, Observer,
+Comparator<Entry<Program, Integer>>
+{
+    private static final long serialVersionUID = 1L;
 
     private final Vector<TableModelListener> listener;
 
-    public ProgramStatistic() {
-        data = new HashMap<Program, Integer>();
-        listener = new Vector<TableModelListener>();
-    }
+    private Vector<Entry<Program, Integer>> data;
 
-    public final void addEntity(final Entity e) {
-        final Program p = e.getProgram();
+    private final Field field;
 
-        int amount = 1;
-        if (data.containsKey(p)) {
-            amount += data.get(p);
-        }
+    public JProgramStatTable(final Field field) {
+        this.listener = new Vector<TableModelListener>();
+        this.data = new Vector<Map.Entry<Program, Integer>>();
+        this.field = field;
 
-        data.put(p, amount);
+        setModel(this);
+        setDefaultRenderer(Program.class, this);
+        field.addObserver(this);
     }
 
     @Override
@@ -66,9 +83,17 @@ public class ProgramStatistic implements TableModel {
     }
 
     @Override
+    public int compare(
+        final Entry<Program, Integer> o1,
+        final Entry<Program, Integer> o2)
+    {
+        return o2.getValue().compareTo(o1.getValue());
+    }
+
+    @Override
     public final Class<?> getColumnClass(final int columnIndex) {
         if (columnIndex == 0) {
-            return String.class;
+            return Program.class;
         } else {
             return Integer.class;
         }
@@ -94,12 +119,36 @@ public class ProgramStatistic implements TableModel {
     }
 
     @Override
-    public final Object getValueAt(final int rowIndex, final int columnIndex) {
-        final Object key = data.keySet().toArray()[rowIndex];
-        if (columnIndex == 0) {
-            return key;
+    public Component getTableCellRendererComponent(
+        final JTable table,
+        final Object value,
+        final boolean isSelected,
+        final boolean hasFocus,
+        final int row,
+        final int column)
+    {
+        if (value instanceof Program) {
+            final Program program = (Program) value;
+            final JPanel panel = new JPanel();
+            panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+            for (final Command c : program) {
+                panel.add(new JLabel(Genetic.COMMAND_ICONS.get(c)));
+            }
+
+            return panel;
         } else {
-            return data.get(key);
+            return new JLabel(String.valueOf(value));
+        }
+    }
+
+    @Override
+    public final Object getValueAt(final int rowIndex, final int columnIndex) {
+        final Entry<Program, Integer> entry = data.get(rowIndex);
+
+        if (columnIndex == 0) {
+            return entry.getKey();
+        } else {
+            return entry.getValue();
         }
     }
 
@@ -109,16 +158,6 @@ public class ProgramStatistic implements TableModel {
         final int columnIndex)
     {
         return false;
-    }
-
-    public final void removeEntity(final Entity e) {
-        final Program p = e.getProgram();
-        final int amount = data.get(p) - 1;
-        if (amount > 0) {
-            data.put(p, amount);
-        } else {
-            data.remove(p);
-        }
     }
 
     @Override
@@ -134,7 +173,27 @@ public class ProgramStatistic implements TableModel {
     {
     }
 
-    public final void update() {
+    @Override
+    public void update(final Observable o, final Object arg) {
+        final HashMap<Program, Integer> unsorted =
+            new HashMap<Program, Integer>();
+
+        final Iterator<Entity> entities = field.getEntityIterator();
+        while (entities.hasNext()) {
+            final Entity entity = entities.next();
+            final Program program = entity.getProgram();
+            int amount = 1;
+            if (unsorted.containsKey(program)) {
+                amount += unsorted.get(program);
+            }
+            unsorted.put(program, amount);
+        }
+
+        final Vector<Entry<Program, Integer>> sorted =
+            new Vector<Map.Entry<Program, Integer>>(unsorted.entrySet());
+        Collections.sort(sorted, this);
+
+        data = sorted;
         for (final TableModelListener l : listener) {
             l.tableChanged(new TableModelEvent(this));
         }

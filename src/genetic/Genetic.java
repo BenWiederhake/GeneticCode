@@ -38,9 +38,24 @@ import genetic.gui.GuiFrame;
 
 import java.awt.EventQueue;
 import java.awt.Point;
+import java.util.HashMap;
+
+import javax.swing.ImageIcon;
 
 public final class Genetic {
+    public static final HashMap<Command, ImageIcon> COMMAND_ICONS =
+        new HashMap<Command, ImageIcon>();
+
     public static void main(final String[] args) {
+        /* load icons */
+        for (final Command c : Command.values()) {
+            final ImageIcon image = new ImageIcon(
+                Genetic.class.getResource("/genetic/res/"
+                    + c.toString()
+                    + ".png"));
+            COMMAND_ICONS.put(c, image);
+        }
+
         final Field field = new Field();
 
         final int grassCount =

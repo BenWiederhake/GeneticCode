@@ -29,14 +29,13 @@
 package genetic.data;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Vector;
 
-public class Program {
+public class Program implements Iterable<Command> {
     public static final Program EMPTY = new Program();
 
     private final Vector<Command> commands;
-
-    private final String programString;
 
     private int current;
 
@@ -55,14 +54,6 @@ public class Program {
         if (commands.isEmpty()) {
             this.commands.add(Command.SLEEP);
         }
-
-        final StringBuilder sb = new StringBuilder();
-
-        for (final Command c : this.commands) {
-            sb.append(c.getChar());
-        }
-
-        programString = sb.toString();
     }
 
     @Override
@@ -90,6 +81,11 @@ public class Program {
     @Override
     public final int hashCode() {
         return commands.hashCode();
+    }
+
+    @Override
+    public Iterator<Command> iterator() {
+        return commands.iterator();
     }
 
     public final Program mutate() {
@@ -121,10 +117,5 @@ public class Program {
         }
 
         return new Program(newCommands);
-    }
-
-    @Override
-    public final String toString() {
-        return programString;
     }
 }
