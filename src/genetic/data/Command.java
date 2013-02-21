@@ -28,6 +28,8 @@
 
 package genetic.data;
 
+import java.awt.Point;
+
 /**
  * A single Command that gets aggregated to complex programs.
  * 
@@ -64,6 +66,65 @@ public enum Command {
         @Override
         public void execute(final Field field, final Entity entity) {
             entity.right();
+        }
+    },
+
+    /** Skips the next command if the entity faces another entity. */
+    IFENTITY {
+        @Override
+        public void execute(final Field field, final Entity entity) {
+            final Point target = field.getTargetCoordinates(entity);
+            boolean hit = false;
+
+            for (final Entity e : field.getEntities()) {
+                if (e.getPosition().equals(target)) {
+                    hit = true;
+                    break;
+                }
+            }
+
+            if (hit) {
+                entity.getProgram().skipCommand();
+            }
+        }
+    },
+
+    /** Skips the next command if the entity faces food. */
+    IFFOOD {
+        @Override
+        public void execute(final Field field, final Entity entity) {
+            final Point target = field.getTargetCoordinates(entity);
+            if (field.getGrass().contains(target)) {
+                entity.getProgram().skipCommand();
+            }
+        }
+    },
+
+    /** Skips the next command if the entity faces a wall. */
+    IFWALL {
+        @Override
+        public void execute(final Field field, final Entity entity) {
+            final Point target = field.getTargetCoordinates(entity);
+            if (field.getWall().contains(target)) {
+                entity.getProgram().skipCommand();
+            }
+        }
+    },
+
+    /** Skip one command. */
+    SKIP {
+        @Override
+        public void execute(final Field field, final Entity entity) {
+            entity.getProgram().skipCommand();
+        }
+    },
+
+    /** Skip two commands. */
+    SKIP2 {
+        @Override
+        public void execute(final Field field, final Entity entity) {
+            entity.getProgram().skipCommand();
+            entity.getProgram().skipCommand();
         }
     },
 

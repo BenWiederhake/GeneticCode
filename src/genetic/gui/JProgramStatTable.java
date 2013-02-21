@@ -38,7 +38,6 @@ import java.awt.Component;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Observable;
@@ -74,6 +73,7 @@ Comparator<Entry<Program, Integer>>
 
         setModel(this);
         setDefaultRenderer(Program.class, this);
+        setRowHeight(20);
         field.addObserver(this);
     }
 
@@ -178,9 +178,8 @@ Comparator<Entry<Program, Integer>>
         final HashMap<Program, Integer> unsorted =
             new HashMap<Program, Integer>();
 
-        final Iterator<Entity> entities = field.getEntityIterator();
-        while (entities.hasNext()) {
-            final Entity entity = entities.next();
+        final Vector<Entity> entities = new Vector<Entity>(field.getEntities());
+        for (final Entity entity : entities) {
             final Program program = entity.getProgram();
             int amount = 1;
             if (unsorted.containsKey(program)) {

@@ -30,7 +30,6 @@ package genetic.data;
 
 import java.awt.Point;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Observable;
 import java.util.Vector;
 
@@ -59,12 +58,12 @@ public class Field extends Observable {
         grass.add(getRandomValidPoint());
     }
 
-    public final Iterator<Entity> getEntityIterator() {
-        return new Vector<Entity>(entities).iterator();
+    public final Vector<Entity> getEntities() {
+        return entities;
     }
 
-    public final Iterator<Point> getGrassIterator() {
-        return new HashSet<Point>(grass).iterator();
+    public final HashSet<Point> getGrass() {
+        return grass;
     }
 
     public final Point getRandomValidPoint() {
@@ -79,8 +78,14 @@ public class Field extends Observable {
         return step;
     }
 
-    public final Iterator<Point> getWallIterator() {
-        return new HashSet<Point>(wall).iterator();
+    public Point getTargetCoordinates(final Entity entity) {
+        final Point origin = entity.getPosition();
+        final Direction direction = entity.getDirection();
+        return sanitizeCoordinates(direction.getCoordinate(origin));
+    }
+
+    public final HashSet<Point> getWall() {
+        return wall;
     }
 
     public final boolean isGrass(final Point p) {

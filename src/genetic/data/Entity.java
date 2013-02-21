@@ -56,6 +56,15 @@ public class Entity {
     }
 
     /**
+     * Returns this entity's direction.
+     * 
+     * @return this entity's direction
+     */
+    public final Direction getDirection() {
+        return direction;
+    }
+
+    /**
      * Returns this entity's energy.
      * 
      * @return this entity's energy

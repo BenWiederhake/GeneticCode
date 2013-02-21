@@ -37,7 +37,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.util.Iterator;
+import java.util.Vector;
 
 import javax.swing.JPanel;
 
@@ -100,25 +100,22 @@ public class JFieldPane extends JPanel {
 
         /* grass */
         g2.setColor(Color.GREEN);
-        final Iterator<Point> grass = field.getGrassIterator();
-        while (grass.hasNext()) {
-            final Point p = grass.next();
+        final Vector<Point> grass = new Vector<Point>(field.getGrass());
+        for (final Point p : grass) {
             drawRectangle(g2, p, lastScale);
         }
 
         /* wall */
         g2.setColor(Color.GRAY);
-        final Iterator<Point> wall = field.getWallIterator();
-        while (wall.hasNext()) {
-            final Point p = wall.next();
+        final Vector<Point> wall = new Vector<Point>(field.getWall());
+        for (final Point p : wall) {
             drawRectangle(g2, p, lastScale);
         }
 
         /* entites */
         g2.setColor(Color.RED);
-        final Iterator<Entity> entity = field.getEntityIterator();
-        while (entity.hasNext()) {
-            final Entity e = entity.next();
+        final Vector<Entity> entity = new Vector<Entity>(field.getEntities());
+        for (final Entity e : entity) {
             drawRectangle(g2, e.getPosition(), lastScale);
         }
     }

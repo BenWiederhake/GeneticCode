@@ -75,7 +75,7 @@ public class Program implements Iterable<Command> {
 
     public final void execute(final Field field, final Entity entity) {
         commands.get(current).execute(field, entity);
-        current = (current + 1) % commands.size();
+        skipCommand();
     }
 
     @Override
@@ -117,5 +117,9 @@ public class Program implements Iterable<Command> {
         }
 
         return new Program(newCommands);
+    }
+
+    public final void skipCommand() {
+        current = (current + 1) % commands.size();
     }
 }
