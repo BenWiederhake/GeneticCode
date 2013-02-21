@@ -37,7 +37,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.util.Vector;
 
 import javax.swing.JPanel;
 
@@ -100,22 +99,19 @@ public class JFieldPane extends JPanel {
 
         /* grass */
         g2.setColor(Color.GREEN);
-        final Vector<Point> grass = new Vector<Point>(field.getGrass());
-        for (final Point p : grass) {
+        for (final Point p : field.getGrass()) {
             drawRectangle(g2, p, lastScale);
         }
 
         /* wall */
         g2.setColor(Color.GRAY);
-        final Vector<Point> wall = new Vector<Point>(field.getWall());
-        for (final Point p : wall) {
+        for (final Point p : field.getWall()) {
             drawRectangle(g2, p, lastScale);
         }
 
         /* entites */
         g2.setColor(Color.RED);
-        final Vector<Entity> entity = new Vector<Entity>(field.getEntities());
-        for (final Entity e : entity) {
+        for (final Entity e : field.getEntities()) {
             drawRectangle(g2, e.getPosition(), lastScale);
         }
     }

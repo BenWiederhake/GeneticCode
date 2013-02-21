@@ -29,25 +29,25 @@
 package genetic.data;
 
 import java.awt.Point;
-import java.util.HashSet;
 import java.util.Observable;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class Field extends Observable {
-    private final HashSet<Point> grass;
+    private final CopyOnWriteArraySet<Point> grass;
 
-    private final HashSet<Point> wall;
+    private final CopyOnWriteArraySet<Point> wall;
 
-    private final Vector<Entity> entities;
+    private final CopyOnWriteArrayList<Entity> entities;
 
     private int timeUntilAddRandomGrass;
 
     private int step;
 
     public Field() {
-        this.grass = new HashSet<Point>();
-        this.wall = new HashSet<Point>();
-        this.entities = new Vector<Entity>();
+        this.grass = new CopyOnWriteArraySet<Point>();
+        this.wall = new CopyOnWriteArraySet<Point>();
+        this.entities = new CopyOnWriteArrayList<Entity>();
     }
 
     public final void addEntity(final Entity e) {
@@ -58,11 +58,11 @@ public class Field extends Observable {
         grass.add(getRandomValidPoint());
     }
 
-    public final Vector<Entity> getEntities() {
+    public final CopyOnWriteArrayList<Entity> getEntities() {
         return entities;
     }
 
-    public final HashSet<Point> getGrass() {
+    public final CopyOnWriteArraySet<Point> getGrass() {
         return grass;
     }
 
@@ -84,7 +84,7 @@ public class Field extends Observable {
         return sanitizeCoordinates(direction.getCoordinate(origin));
     }
 
-    public final HashSet<Point> getWall() {
+    public final CopyOnWriteArraySet<Point> getWall() {
         return wall;
     }
 
@@ -143,22 +143,13 @@ public class Field extends Observable {
             }
         }
 
-        final Vector<Entity> dead = new Vector<Entity>();
-        final Vector<Entity> born = new Vector<Entity>();
-
         for (final Entity e : entities) {
             e.step(this);
             if (e.getHealth() <= 0) {
-                dead.add(e);
+                entities.remove(e);
             } else if (e.getHealth() > Parameter.REPRODUCTION_HP.getValue()) {
-                born.add(e);
+                entities.add(e.replicate(this));
             }
-        }
-
-        entities.removeAll(dead);
-
-        for (final Entity e : born) {
-            addEntity(e.replicate(this));
         }
 
         setChanged();

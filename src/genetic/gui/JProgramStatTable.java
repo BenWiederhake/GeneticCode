@@ -143,7 +143,13 @@ Comparator<Entry<Program, Integer>>
 
     @Override
     public final Object getValueAt(final int rowIndex, final int columnIndex) {
-        final Entry<Program, Integer> entry = data.get(rowIndex);
+        final Vector<Entry<Program, Integer>> entries = data;
+
+        if (rowIndex >= entries.size()) {
+            return null;
+        }
+
+        final Entry<Program, Integer> entry = entries.get(rowIndex);
 
         if (columnIndex == 0) {
             return entry.getKey();
