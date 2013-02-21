@@ -109,39 +109,20 @@ public class Field extends Observable {
     public final Point sanitizeCoordinates(final Point p) {
         final int width = Parameter.FIELD_WIDTH.getValue();
         final int height = Parameter.FIELD_HEIGHT.getValue();
-        final boolean wrapX = Parameter.ENDLESS_X.getValue() == 1;
-        final boolean wrapY = Parameter.ENDLESS_Y.getValue() == 1;
-
         if (p.x < 0) {
-            if (wrapX) {
-                return sanitizeCoordinates(new Point(p.x + width, p.y));
-            } else {
-                return null;
-            }
+            return sanitizeCoordinates(new Point(p.x + width, p.y));
         }
 
         if (p.x >= width) {
-            if (wrapX) {
-                return sanitizeCoordinates(new Point(p.x - width, p.y));
-            } else {
-                return null;
-            }
+            return sanitizeCoordinates(new Point(p.x - width, p.y));
         }
 
         if (p.y < 0) {
-            if (wrapY) {
-                return sanitizeCoordinates(new Point(p.x, p.y + height));
-            } else {
-                return null;
-            }
+            return sanitizeCoordinates(new Point(p.x, p.y + height));
         }
 
         if (p.y >= height) {
-            if (wrapY) {
-                return sanitizeCoordinates(new Point(p.x, p.y - height));
-            } else {
-                return null;
-            }
+            return sanitizeCoordinates(new Point(p.x, p.y - height));
         }
 
         return p;

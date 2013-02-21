@@ -37,12 +37,6 @@ public enum Parameter {
     /** Field height. */
     FIELD_HEIGHT("Field height", 1, 100, 512, false),
 
-    /** If the field wraps horizontally. */
-    ENDLESS_X("Horizontal Wrapping", 0, 1, 1, false),
-
-    /** If the field wraps vertically. */
-    ENDLESS_Y("Vertical Wrapping", 0, 1, 1, false),
-
     /** How much food there is on the field initially, in percent. */
     INITIAL_FOOD("Initial food on the field in percent", 0, 25, 100, false),
 
