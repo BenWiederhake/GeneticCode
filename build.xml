@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<project name="GeneticCode" default="jar" basedir=".">
+	<target name="clean">
+		<delete dir="bin" />
+		<delete file="GeneticCode.jar" />
+	</target>
+
+	<target name="compile">
+		<mkdir dir="bin" />
+		<javac srcdir="src" destdir="bin" includeantruntime="false" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="GeneticCode.jar" basedir="bin">
+			<manifest>
+				<attribute name="Main-Class" value="genetic.Genetic" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="run" depends="jar">
+		<java jar="GeneticCode.jar" fork="true" />
+	</target>
+</project>
