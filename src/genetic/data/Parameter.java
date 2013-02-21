@@ -32,28 +32,34 @@ import java.util.Random;
 
 public enum Parameter {
     /** Field width. */
-    FIELD_WIDTH("Field width", 1, 100, 512, false),
+    FIELD_WIDTH("Field width", 1, 200, 512, false),
 
     /** Field height. */
-    FIELD_HEIGHT("Field height", 1, 100, 512, false),
+    FIELD_HEIGHT("Field height", 1, 200, 512, false),
 
     /** How much food there is on the field initially, in percent. */
     INITIAL_FOOD("Initial food on the field in percent", 0, 25, 100, false),
 
+    /** How many walls are there initially, in percent. */
+    INITIAL_WALL("Initial walls on the field in percent", 0, 1, 100, false),
+
+    /** How big the start population is. */
+    INITIAL_POPULATION("Initial population size", 1, 100, 1000, false),
+
     /** Scale to display the field. */
-    FIELD_SCALE("Field scale", 1, 5, 20, true),
+    FIELD_SCALE("Field scale", 1, 4, 20, true),
 
     /** Simulation speed in ticks per second. */
-    SIMULATION_SPEED("Simulation speed in ticks per second", 1, 20, 100, true),
+    SIMULATION_SPEED("Simulation speed in ticks per second", 1, 20, 200, true),
 
     /** Mutation rate in percent. */
     MUTATION_RATE("Mutation rate in percent", 0, 50, 100, true),
 
     /** Food regrowth rate in perdeka. */
-    REGROWTH_RATE("Regrowth rate in food per 10 ticks", 0, 40, 100, true),
+    REGROWTH_RATE("Regrowth rate in food per 10 ticks", 0, 100, 200, true),
 
     /** Health per Food. */
-    HEALTH_PER_FOOD("Health per Food", 0, 10, 100, true),
+    HEALTH_PER_FOOD("Health per Food", 0, 25, 100, true),
 
     /** Energy loss per step. */
     HEALTH_PER_STEP("Health loss per step", 0, 1, 10, true),

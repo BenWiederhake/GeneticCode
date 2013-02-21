@@ -37,7 +37,6 @@ import genetic.data.Program;
 import genetic.gui.GuiFrame;
 
 import java.awt.EventQueue;
-import java.awt.Point;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
@@ -47,6 +46,8 @@ public final class Genetic {
         new HashMap<Command, ImageIcon>();
 
     public static void main(final String[] args) {
+        final Field field = new Field();
+
         /* load icons */
         for (final Command c : Command.values()) {
             final ImageIcon image = new ImageIcon(
@@ -56,31 +57,40 @@ public final class Genetic {
             COMMAND_ICONS.put(c, image);
         }
 
-        final Field field = new Field();
-
-        final int grassCount =
+        /* place initial food */
+        final int foodCount =
             (Parameter.FIELD_WIDTH.getValue()
                 * Parameter.FIELD_HEIGHT.getValue()
                 * Parameter.INITIAL_FOOD.getValue()) / Parameter.PERCENT;
 
-        for (int i = 0; i < grassCount; ++i) {
+        for (int i = 0; i < foodCount; ++i) {
             field.addRandomGrass();
         }
 
-        field.addEntity(new Entity(
-            1000,
-            new Program(
-                Command.LEFT,
-                Command.MOVE,
-                Command.RIGHT,
-                Command.MOVE,
-                Command.MOVE),
-            new Point(),
-            Direction.DOWN));
+        /* place initial walls */
+        final int wallCount =
+            (Parameter.FIELD_WIDTH.getValue()
+                * Parameter.FIELD_HEIGHT.getValue()
+                * Parameter.INITIAL_WALL.getValue()) / Parameter.PERCENT;
 
+        for (int i = 0; i < wallCount; ++i) {
+            field.addRandomWall();
+        }
+
+        /* place initial population */
+        for (int i = 0; i < Parameter.INITIAL_POPULATION.getValue(); ++i) {
+            field.addEntity(new Entity(
+                100,
+                new Program(Command.MOVE),
+                field.getRandomValidPoint(),
+                Direction.getRandom()));
+        }
+
+        /* show the gui */
         final GuiFrame guiFrame = new GuiFrame(field);
         EventQueue.invokeLater(guiFrame);
 
+        /* start the simulation */
         while (true) {
             try {
                 final double sleepTime =

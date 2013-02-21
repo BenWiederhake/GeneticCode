@@ -1,8 +1,0 @@
-TODO
-====
-
-* Add documentation about commands.
-* Let the user set immutable parameters (like field size) upfront.
-* Let the user set the initial population
-* Add an "About" button
-* Add a "License" button

@@ -58,6 +58,10 @@ public class Field extends Observable {
         grass.add(getRandomValidPoint());
     }
 
+    public void addRandomWall() {
+        wall.add(getRandomValidPoint());
+    }
+
     public final CopyOnWriteArrayList<Entity> getEntities() {
         return entities;
     }
