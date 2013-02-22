@@ -138,6 +138,10 @@ public class Entity {
 
     public final void step(final Field field) {
         program.execute(field, this);
+        if (field.isGrass(position)) {
+            health += Parameter.HEALTH_PER_FOOD.getValue();
+            field.removeGrass(position);
+        }
         health -= Parameter.HEALTH_PER_STEP.getValue();
     }
 }
