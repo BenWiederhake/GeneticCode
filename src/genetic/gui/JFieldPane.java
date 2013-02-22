@@ -51,6 +51,14 @@ public class JFieldPane extends JPanel implements Observer {
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    private static final Color[] ENTITY_SHADES = new Color[256];
+
+    static {
+        for (int i = 0; i < ENTITY_SHADES.length; i++) {
+            ENTITY_SHADES[i] = new Color(i, 0, 0);
+        }
+    }
+
     /** Simulation field. */
     private final Field field;
 
@@ -180,8 +188,13 @@ public class JFieldPane extends JPanel implements Observer {
         }
 
         /* entities */
-        g2.setColor(Color.RED);
+        final int lastReproductionHP = Parameter.REPRODUCTION_HP.getValue();
         for (final Entity e : field.getEntities()) {
+            final int relativeHealth = (e.getHealth() *
+                (ENTITY_SHADES.length - 1)) / lastReproductionHP;
+            final int index = Math.min(ENTITY_SHADES.length - 1,
+                Math.max(relativeHealth, 0));
+            g2.setColor(ENTITY_SHADES[index]);
             drawRectangle(g2, e.getPosition());
         }
     }
