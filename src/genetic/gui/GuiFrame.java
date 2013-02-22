@@ -31,15 +31,13 @@ package genetic.gui;
 import genetic.data.Field;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.util.Observable;
-import java.util.Observer;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-public class GuiFrame extends JFrame implements Runnable, Observer {
+public class GuiFrame extends JFrame implements Runnable {
     private static final long serialVersionUID = 1L;
 
     private static final int FRAME_WIDTH = 1000;
@@ -49,16 +47,19 @@ public class GuiFrame extends JFrame implements Runnable, Observer {
     public static final int INSET = 5;
 
     /** Displays the field. */
-    private final JPanel fieldPanel;
+    private final JFieldPane fieldPane;
 
     /** Displays the settings. */
     private final JSettingsPane settingsPane;
+
+    private final JStatusPane statusPane;
 
     public GuiFrame(final Field field) {
         super("Genetic Code");
 
         this.settingsPane = new JSettingsPane(field, false);
-        this.fieldPanel = new JFieldPane(field);
+        this.fieldPane = new JFieldPane(field);
+        this.statusPane = new JStatusPane(field, this);
 
         final JPanel contentPane = new JPanel();
 
@@ -66,38 +67,21 @@ public class GuiFrame extends JFrame implements Runnable, Observer {
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
 
 
-        final JScrollPane scrollSettings = new JScrollPane(
-            settingsPane,
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollSettings.getVerticalScrollBar().setUnitIncrement(INSET);
-        scrollSettings.setPreferredSize(new Dimension(
-            JSettingsPane.PREFERRED_WIDTH,
-            0));
-
         final JScrollPane scrollField = new JScrollPane(
-            fieldPanel,
+            fieldPane,
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         contentPane.setLayout(new BorderLayout(0, 0));
-        contentPane.add(scrollSettings, BorderLayout.WEST);
+        contentPane.add(settingsPane, BorderLayout.WEST);
         contentPane.add(scrollField, BorderLayout.CENTER);
-
+        contentPane.add(statusPane, BorderLayout.SOUTH);
+        statusPane.setLayout(new BoxLayout(statusPane, BoxLayout.X_AXIS));
         setContentPane(contentPane);
-        if (field != null) {
-            field.addObserver(this);
-        }
     }
 
     @Override
     public final void run() {
         setVisible(true);
-    }
-
-    @Override
-    public final void update(final Observable o, final Object arg) {
-        settingsPane.update(o, arg);
-        fieldPanel.repaint();
     }
 }

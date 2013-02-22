@@ -71,10 +71,16 @@ Comparator<Entry<Program, Integer>>
         this.data = new Vector<Map.Entry<Program, Integer>>();
         this.field = field;
 
+        if (field == null) {
+            return;
+        }
+
+        field.addObserver(this);
+
         setModel(this);
         setDefaultRenderer(Program.class, this);
         setRowHeight(20);
-        field.addObserver(this);
+        // TODO adjust column width
     }
 
     @Override
@@ -93,9 +99,9 @@ Comparator<Entry<Program, Integer>>
     @Override
     public final Class<?> getColumnClass(final int columnIndex) {
         if (columnIndex == 0) {
-            return Program.class;
-        } else {
             return Integer.class;
+        } else {
+            return Program.class;
         }
     }
 
@@ -107,9 +113,9 @@ Comparator<Entry<Program, Integer>>
     @Override
     public final String getColumnName(final int columnIndex) {
         if (columnIndex == 0) {
-            return "Program";
-        } else {
             return "#";
+        } else {
+            return "Program";
         }
     }
 
@@ -152,9 +158,9 @@ Comparator<Entry<Program, Integer>>
         final Entry<Program, Integer> entry = entries.get(rowIndex);
 
         if (columnIndex == 0) {
-            return entry.getKey();
-        } else {
             return entry.getValue();
+        } else {
+            return entry.getKey();
         }
     }
 

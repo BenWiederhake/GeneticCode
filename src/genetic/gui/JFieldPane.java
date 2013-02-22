@@ -37,10 +37,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JPanel;
 
-public class JFieldPane extends JPanel {
+public class JFieldPane extends JPanel implements Observer {
     private static final long serialVersionUID = 1L;
 
     private final Field field;
@@ -58,6 +60,9 @@ public class JFieldPane extends JPanel {
 
         rescale();
         setOpaque(true);
+        if (field != null) {
+            field.addObserver(this);
+        }
     }
 
     private void drawRectangle(
@@ -134,5 +139,10 @@ public class JFieldPane extends JPanel {
         lastScale = scale;
         repaint();
         return true;
+    }
+
+    @Override
+    public void update(final Observable o, final Object arg) {
+        repaint();
     }
 }

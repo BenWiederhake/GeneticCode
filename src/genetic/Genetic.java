@@ -45,15 +45,18 @@ public final class Genetic {
     public static final HashMap<Command, ImageIcon> COMMAND_ICONS =
         new HashMap<Command, ImageIcon>();
 
+    public static ImageIcon loadIcon(final String path) {
+        return new ImageIcon(Genetic.class.getResource(path));
+    }
+
     public static void main(final String[] args) {
         final Field field = new Field();
 
         /* load icons */
         for (final Command c : Command.values()) {
-            final ImageIcon image = new ImageIcon(
-                Genetic.class.getResource("/genetic/res/"
-                    + c.toString()
-                    + ".png"));
+            final ImageIcon image = loadIcon("/genetic/res/"
+                + c.toString()
+                + ".png");
             COMMAND_ICONS.put(c, image);
         }
 

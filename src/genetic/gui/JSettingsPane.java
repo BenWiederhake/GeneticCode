@@ -32,69 +32,52 @@ import genetic.data.Field;
 import genetic.data.Parameter;
 
 import java.awt.Dimension;
-import java.util.Observable;
-import java.util.Observer;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.border.TitledBorder;
 
-public class JSettingsPane extends JPanel implements Observer {
+public class JSettingsPane extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public static final int PREFERRED_WIDTH = 300;
 
-    private final Field field;
-
-    private final JLabel stepLabel;
-
     private final JProgramStatTable programStatTable;
 
     public JSettingsPane(final Field field, final boolean mutable) {
-        this.field = field;
-        this.stepLabel = new JLabel("0");
         this.programStatTable = new JProgramStatTable(field);
-
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        final JPanel stepPanel = new JPanel();
-        stepPanel.add(stepLabel);
-        stepPanel.setBorder(new TitledBorder(
-            null,
-            "Steps",
-            TitledBorder.LEADING,
-            TitledBorder.TOP,
-            null,
-            null));
 
         final JScrollPane scrollTable = new JScrollPane(programStatTable);
         scrollTable.setPreferredSize(new Dimension(
-            Integer.MIN_VALUE,
+            PREFERRED_WIDTH,
+            PREFERRED_WIDTH / 2));
+        scrollTable.setMaximumSize(new Dimension(
+            PREFERRED_WIDTH,
             PREFERRED_WIDTH));
 
-        if (!mutable) {
-            add(stepPanel);
-        }
+        final JPanel parameterPanel = new JPanel();
+        parameterPanel.setLayout(
+            new BoxLayout(parameterPanel, BoxLayout.Y_AXIS));
 
-        add(Box.createVerticalGlue());
         for (final Parameter p : Parameter.values()) {
-            add(new JParameterPane(p, mutable));
+            parameterPanel.add(new JParameterPane(p, mutable));
         }
 
+        final JScrollPane scrollSettings = new JScrollPane(
+            parameterPanel,
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        scrollSettings.getVerticalScrollBar().setUnitIncrement(GuiFrame.INSET);
+        scrollSettings.setPreferredSize(new Dimension(
+            JSettingsPane.PREFERRED_WIDTH,
+            0));
+
+
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        add(scrollSettings);
         if (!mutable) {
             add(scrollTable);
         }
-
-        if (field != null) {
-            field.addObserver(this);
-        }
-    }
-
-    @Override
-    public final void update(final Observable o, final Object arg) {
-        stepLabel.setText(String.valueOf(field.getStep()));
     }
 }
