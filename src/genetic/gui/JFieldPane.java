@@ -57,6 +57,9 @@ public class JFieldPane extends JPanel implements Observer {
     /** Last known display scale. */
     private int scale;
 
+    /** Last known grid gap. */
+    private int gridGap;
+
     /**
      * Create a new JFieldPane.
      * 
@@ -78,14 +81,16 @@ public class JFieldPane extends JPanel implements Observer {
     }
 
     /**
-     * Draw an single point correctly scaled on the current {@link Graphics2D}
-     * object.
+     * Draw an single cell correctly scaled and translated on the current
+     * {@link Graphics2D} object.
      * 
      * @param g2 current graphics object
      * @param p point to draw
      */
     private void drawRectangle(final Graphics2D g2, final Point p) {
-        g2.fillRect(1 + (p.x * scale), 1 + (p.y * scale), scale - 1, scale - 1);
+        g2.fillRect(
+            gridGap + (p.x * scale), gridGap + (p.y * scale),
+            scale - gridGap, scale - gridGap);
     }
 
     @Override
@@ -94,17 +99,41 @@ public class JFieldPane extends JPanel implements Observer {
         final int height = Parameter.FIELD_HEIGHT.getValue() * scale;
 
         return new Dimension(
-            width + 1 + (GuiFrame.GAP * 2),
-            height + 1 + (GuiFrame.GAP * 2));
+            width + gridGap + (GuiFrame.GAP * 2),
+            height + gridGap + (GuiFrame.GAP * 2));
     }
 
+    /**
+     * Paints the field by rendering the grid, then rendering grass, wall and
+     * cell. To clarify the defined terms for the measurements:
+     * 
+     * <pre>
+     * |--                  Whole field                    --|
+     *       |--   scale   --|--   scale   --|--   scale   --|
+     * |--G--|--  C  --|--G--|--  C  --|--G--|--  C  --|--G--|
+     * |--   scale   --|--   scale   --|--   scale   --|
+     * </pre>
+     * 
+     * Where G is the GRID_GAP, and C is the actual "paintable" width per cell.
+     * Same rules apply for height. The GRID_GAP is not capped, but paint()
+     * won't internally use higher values for it than FIELD_SCALE - 1. <br />
+     * The two "scale" lines will always exhibit this useful behavior; plus is
+     * commutative: G + C = C + G for all integer G, C
+     */
     @Override
     public final void paint(final Graphics g) {
         final int currentScale = Parameter.FIELD_SCALE.getValue();
+        /* Always leave at least 1 pixel of display */
+        final int currentGridGap =
+            Math.min(Parameter.GRID_GAP.getValue(), scale - 1);
 
-        /* if the scale changed, revalidate bevore repainting. */
-        if (scale != currentScale) {
+        /*
+         * If the size or something that affects it changed, revalidate before
+         * repainting.
+         */
+        if (scale != currentScale || gridGap != currentGridGap) {
             scale = currentScale;
+            gridGap = currentGridGap;
             revalidate();
             repaint();
             return;
@@ -115,21 +144,23 @@ public class JFieldPane extends JPanel implements Observer {
         final int fieldWidth = Parameter.FIELD_WIDTH.getValue();
         final int fieldHeight = Parameter.FIELD_HEIGHT.getValue();
 
-        final int widthpx = fieldWidth * scale;
-        final int heightpx = fieldHeight * scale;
-
         g2.translate(GuiFrame.GAP, GuiFrame.GAP);
 
         /* grid */
-        g2.setColor(Color.BLACK);
-        for (int i = 0; i < (fieldWidth + 1); ++i) {
-            final int ipx = i * scale;
-            g2.drawLine(ipx, 0, ipx, heightpx);
-        }
+        if (Parameter.GRID_VISIBILITY.getValue() != 0 && gridGap > 0) {
+            final int widthpx = fieldWidth * scale;
+            final int heightpx = fieldHeight * scale;
 
-        for (int i = 0; i < (fieldHeight + 1); ++i) {
-            final int ipx = i * scale;
-            g2.drawLine(0, ipx, widthpx, ipx);
+            g2.setColor(Color.BLACK);
+            for (int i = 0; i < (fieldWidth + 1); ++i) {
+                final int ipx = i * scale;
+                g2.fillRect(ipx, 0, gridGap, heightpx);
+            }
+
+            for (int i = 0; i < (fieldHeight + 1); ++i) {
+                final int ipx = i * scale;
+                g2.fillRect(0, ipx, widthpx, gridGap);
+            }
         }
 
         if (field == null) {
@@ -148,7 +179,7 @@ public class JFieldPane extends JPanel implements Observer {
             drawRectangle(g2, p);
         }
 
-        /* entites */
+        /* entities */
         g2.setColor(Color.RED);
         for (final Entity e : field.getEntities()) {
             drawRectangle(g2, e.getPosition());

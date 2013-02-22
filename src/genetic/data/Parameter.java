@@ -28,6 +28,8 @@
 
 package genetic.data;
 
+import genetic.gui.JFieldPane;
+
 import java.util.Random;
 import java.util.Vector;
 
@@ -61,6 +63,16 @@ public enum Parameter implements BoundedRangeModel {
 
     /** Scale to display the field. */
     FIELD_SCALE("Field scale", 1, 4, 20, true),
+
+    /**
+     * How wide the grid should be when displayed.
+     * 
+     * @see JFieldPane#paint(java.awt.Graphics)
+     */
+    GRID_GAP("Grid gap width", 0, 1, 3, true),
+
+    /** Whether the grid should be rendered. 0 for "disabled" */
+    GRID_VISIBILITY("Grid gap visibility", 0, 1, 1, true),
 
     /** Simulation speed in ticks per second. */
     SIMULATION_SPEED("Simulation speed in ticks per second", 1, 20, 200, true),
