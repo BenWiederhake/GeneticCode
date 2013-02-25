@@ -48,6 +48,47 @@ public class Field extends Observable {
         this.grass = new CopyOnWriteArraySet<Point>();
         this.wall = new CopyOnWriteArraySet<Point>();
         this.entities = new CopyOnWriteArrayList<Entity>();
+
+        reset();
+    }
+
+    public final void reset() {
+        grass.clear();
+        wall.clear();
+        entities.clear();
+        step = 0;
+
+        final int fieldWidth = Parameter.FIELD_WIDTH.getValue();
+        final int fieldHeight = Parameter.FIELD_HEIGHT.getValue();
+        final int fieldSize = fieldWidth * fieldHeight;
+
+        /* place initial food */
+        final int foodCount = (fieldSize * Parameter.INITIAL_FOOD.getValue())
+            / Parameter.PERCENT;
+
+        for (int i = 0; i < foodCount; ++i) {
+            addRandomGrass();
+        }
+
+        /* place initial walls */
+        final int wallCount = (fieldSize * Parameter.INITIAL_WALL.getValue())
+            / Parameter.PERCENT;
+
+        for (int i = 0; i < wallCount; ++i) {
+            addRandomWall();
+        }
+
+        /* place initial population */
+        for (int i = 0; i < Parameter.INITIAL_POPULATION.getValue(); ++i) {
+            addEntity(new Entity(
+                100,
+                new Program(Command.MOVE),
+                getRandomValidPoint(),
+                Direction.getRandom()));
+        }
+
+        setChanged();
+        notifyObservers();
     }
 
     public final void addEntity(final Entity e) {

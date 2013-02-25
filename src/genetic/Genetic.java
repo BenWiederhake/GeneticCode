@@ -29,11 +29,8 @@
 package genetic;
 
 import genetic.data.Command;
-import genetic.data.Direction;
-import genetic.data.Entity;
 import genetic.data.Field;
 import genetic.data.Parameter;
-import genetic.data.Program;
 import genetic.gui.GuiFrame;
 
 import java.awt.EventQueue;
@@ -50,8 +47,6 @@ public final class Genetic {
     }
 
     public static void main(final String[] args) {
-        final Field field = new Field();
-
         /* load icons */
         for (final Command c : Command.values()) {
             final ImageIcon image = loadIcon("/genetic/res/"
@@ -60,34 +55,8 @@ public final class Genetic {
             COMMAND_ICONS.put(c, image);
         }
 
-        /* place initial food */
-        final int foodCount =
-            (Parameter.FIELD_WIDTH.getValue()
-                * Parameter.FIELD_HEIGHT.getValue()
-                * Parameter.INITIAL_FOOD.getValue()) / Parameter.PERCENT;
-
-        for (int i = 0; i < foodCount; ++i) {
-            field.addRandomGrass();
-        }
-
-        /* place initial walls */
-        final int wallCount =
-            (Parameter.FIELD_WIDTH.getValue()
-                * Parameter.FIELD_HEIGHT.getValue()
-                * Parameter.INITIAL_WALL.getValue()) / Parameter.PERCENT;
-
-        for (int i = 0; i < wallCount; ++i) {
-            field.addRandomWall();
-        }
-
-        /* place initial population */
-        for (int i = 0; i < Parameter.INITIAL_POPULATION.getValue(); ++i) {
-            field.addEntity(new Entity(
-                100,
-                new Program(Command.MOVE),
-                field.getRandomValidPoint(),
-                Direction.getRandom()));
-        }
+        /* load & prepare (in constructor) */
+        final Field field = new Field();
 
         /* show the gui */
         final GuiFrame guiFrame = new GuiFrame(field);
