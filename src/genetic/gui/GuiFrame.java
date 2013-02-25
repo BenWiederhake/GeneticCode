@@ -32,7 +32,6 @@ import genetic.data.Field;
 
 import java.awt.BorderLayout;
 
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -45,12 +44,6 @@ import javax.swing.JScrollPane;
 public class GuiFrame extends JFrame implements Runnable {
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
-
-    /** Default frame width. */
-    private static final int FRAME_WIDTH = 1000;
-
-    /** Default frame height. */
-    private static final int FRAME_HEIGHT = 800;
 
     /** Default inter-element spacing. */
     public static final int INSET = 5;
@@ -76,23 +69,21 @@ public class GuiFrame extends JFrame implements Runnable {
         this.fieldPane = new JFieldPane(field);
         this.statusPane = new JStatusPane(field, this);
 
-        final JPanel contentPane = new JPanel();
-
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(FRAME_WIDTH, FRAME_HEIGHT);
-
-
         final JScrollPane scrollField = new JScrollPane(
             fieldPane,
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
+        final JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(0, 0));
         contentPane.add(settingsPane, BorderLayout.WEST);
         contentPane.add(scrollField, BorderLayout.CENTER);
         contentPane.add(statusPane, BorderLayout.SOUTH);
-        statusPane.setLayout(new BoxLayout(statusPane, BoxLayout.X_AXIS));
+
         setContentPane(contentPane);
+        setLocationByPlatform(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
     }
 
     @Override
