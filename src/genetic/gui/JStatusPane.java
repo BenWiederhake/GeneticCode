@@ -32,8 +32,8 @@ import genetic.Genetic;
 import genetic.data.Command;
 import genetic.data.Field;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.InputStream;
@@ -51,6 +51,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 /**
  * This class represents the action executed on pressing the "about" button.
@@ -61,6 +62,12 @@ class ActionAboutButton extends JDialog implements ActionListener {
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** Default dialog size. */
+    private static final Dimension DEFAULT_SIZE = new Dimension(500, 300);
+
+    /** Dialog visibility. */
+    private boolean visible = false;
+
     /**
      * Create a new ActionAboutButton.
      * 
@@ -68,9 +75,6 @@ class ActionAboutButton extends JDialog implements ActionListener {
      */
     public ActionAboutButton(final GuiFrame guiFrame) {
         super(guiFrame);
-        setTitle("About GeneticCode");
-        setSize(450, 300);
-        setLocationRelativeTo(guiFrame);
 
         final InputStream input = ActionAboutButton.class.getResourceAsStream(
             "/genetic/res/license.html");
@@ -78,12 +82,25 @@ class ActionAboutButton extends JDialog implements ActionListener {
         final JEditorPane editorPane = new JEditorPane("text/html", text);
         editorPane.setEditable(false);
         editorPane.setOpaque(false);
-        add(new JScrollPane(editorPane));
+
+        final JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(this);
+
+        final JPanel buttonPane = new JPanel();
+        buttonPane.add(closeButton);
+
+        add(new JScrollPane(editorPane), BorderLayout.CENTER);
+        add(buttonPane, BorderLayout.SOUTH);
+
+        setTitle("About GeneticCode");
+        setSize(DEFAULT_SIZE);
+        setLocationRelativeTo(guiFrame);
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        setVisible(true);
+        visible = !visible;
+        setVisible(visible);
     }
 
     @Override
@@ -103,6 +120,15 @@ class ActionHelpButton extends JDialog implements ActionListener {
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** Default dialog size. */
+    private static final Dimension DEFAULT_SIZE = new Dimension(500, 300);
+
+    /** Dialog visibility. */
+    private boolean visible = false;
+
+    /** Holds the conent of this dialog. */
+    private final JPanel contentPane;
+
     /**
      * Create a new ActionHelpButton.
      * 
@@ -110,10 +136,13 @@ class ActionHelpButton extends JDialog implements ActionListener {
      */
     public ActionHelpButton(final GuiFrame guiFrame) {
         super(guiFrame);
-        setTitle("Icon reference");
-        setSize(450, 300);
-        setLocationRelativeTo(guiFrame);
-        setLayout(new GridLayout(0, 1));
+        contentPane = new JPanel();
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
+        contentPane.setBorder(new EmptyBorder(
+            GuiFrame.GAP,
+            GuiFrame.GAP,
+            GuiFrame.GAP,
+            GuiFrame.GAP));
 
         addDesc(Command.DOUBLEMOVE, "Move two steps forward");
         addDesc(Command.MOVE, "Move one step forward");
@@ -131,26 +160,40 @@ class ActionHelpButton extends JDialog implements ActionListener {
         addDesc(Command.SKIP, "Skip one command");
         addDesc(Command.SKIP2, "Skip two commands");
         addDesc(Command.SLEEP, "Do nothing");
+
+        final JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(this);
+
+        final JPanel buttonPane = new JPanel();
+        buttonPane.add(closeButton);
+
+        add(new JScrollPane(contentPane), BorderLayout.CENTER);
+        add(buttonPane, BorderLayout.SOUTH);
+        setTitle("Icon reference");
+        setSize(DEFAULT_SIZE);
+        setLocationRelativeTo(guiFrame);
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        setVisible(true);
+        visible = !visible;
+        setVisible(visible);
     }
 
     /**
      * Add description for a {@link Command}.
      * 
      * @param c command to describe
-     * @param s text
+     * @param text description
      */
-    private void addDesc(final Command c, final String s) {
+    private void addDesc(final Command c, final String text) {
         final JLabel label = new JLabel(
-            s,
+            "= " + text,
             Genetic.COMMAND_ICONS.get(c),
             JLabel.HORIZONTAL);
         label.setHorizontalAlignment(SwingConstants.LEFT);
-        add(label);
+        contentPane.add(label);
+        contentPane.add(Box.createVerticalStrut(GuiFrame.GAP));
     }
 
     @Override
@@ -168,6 +211,9 @@ public class JStatusPane extends JPanel implements Observer {
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** Static width of textfields in characters. */
+    private static final int TEXTFIELD_WIDTH = 6;
+
     /** Simulation field. */
     private final Field field;
 
@@ -184,24 +230,25 @@ public class JStatusPane extends JPanel implements Observer {
      * @param guiFrame parent frame
      */
     public JStatusPane(final Field field, final GuiFrame guiFrame) {
+        this.stepField = new JTextField(TEXTFIELD_WIDTH);
+        this.populationField = new JTextField(TEXTFIELD_WIDTH);
         this.field = field;
-        this.stepField = new JTextField(6);
-        this.populationField = new JTextField(6);
+        if (field != null) {
+            field.addObserver(this);
+            update(null, null);
+        }
+
+        stepField.setEditable(false);
+        stepField.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        populationField.setEditable(false);
+        populationField.setHorizontalAlignment(SwingConstants.RIGHT);
 
         final JLabel stepLabel = new JLabel("Steps: ");
         final JLabel populationLabel = new JLabel("Population: ");
 
         stepLabel.setLabelFor(stepField);
-        stepField.setEditable(false);
-        // TODO remove set[Minimum|Maximum|Preferred]Size() calls.
-        stepField.setMaximumSize(new Dimension(50, Integer.MAX_VALUE));
-        stepField.setHorizontalAlignment(SwingConstants.RIGHT);
-
         populationLabel.setLabelFor(populationField);
-        populationField.setEditable(false);
-        // TODO remove set[Minimum|Maximum|Preferred]Size() calls.
-        populationField.setMaximumSize(new Dimension(50, Integer.MAX_VALUE));
-        populationField.setHorizontalAlignment(SwingConstants.RIGHT);
 
         final JButton helpButton = new JButton(
             "Help",
@@ -215,21 +262,22 @@ public class JStatusPane extends JPanel implements Observer {
         aboutButton.addActionListener(new ActionAboutButton(guiFrame));
         aboutButton.setFocusPainted(false);
 
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        add(stepLabel);
-        add(stepField);
-        add(Box.createHorizontalStrut(GuiFrame.INSET));
-        add(populationLabel);
-        add(populationField);
-        add(Box.createHorizontalGlue());
-        add(helpButton);
-        add(Box.createHorizontalStrut(GuiFrame.INSET));
-        add(aboutButton);
+        final JPanel labelPane = new JPanel();
+        labelPane.add(stepLabel);
+        labelPane.add(stepField);
+        labelPane.add(Box.createHorizontalStrut(GuiFrame.GAP * 2));
+        labelPane.add(populationLabel);
+        labelPane.add(populationField);
 
-        if (field != null) {
-            field.addObserver(this);
-            update(null, null);
-        }
+        final JPanel buttonPane = new JPanel();
+        buttonPane.add(helpButton);
+        buttonPane.add(Box.createHorizontalStrut(GuiFrame.GAP * 2));
+        buttonPane.add(aboutButton);
+
+        setLayout(new BorderLayout());
+        add(labelPane, BorderLayout.WEST);
+        add(Box.createGlue(), BorderLayout.CENTER);
+        add(buttonPane, BorderLayout.EAST);
     }
 
     @Override

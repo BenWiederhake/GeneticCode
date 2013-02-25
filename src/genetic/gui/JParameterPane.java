@@ -55,9 +55,6 @@ public class JParameterPane extends JPanel implements ChangeListener {
     /** Label displaying the current value. */
     private final JLabel label;
 
-    /** Slider to adjust this parameter's value. */
-    private final JSlider slider;
-
     /**
      * Create a new JParameterPane.
      * 
@@ -78,15 +75,6 @@ public class JParameterPane extends JPanel implements ChangeListener {
         this.parameter = parameter;
         parameter.addChangeListener(this);
 
-        setLayout(new BorderLayout(GuiFrame.INSET, 0));
-        setBorder(new TitledBorder(
-            null,
-            parameter.getTitle(),
-            TitledBorder.LEADING,
-            TitledBorder.TOP,
-            null,
-            null));
-
         final Hashtable<Integer, JLabel> labelTable =
             new Hashtable<Integer, JLabel>();
 
@@ -97,7 +85,7 @@ public class JParameterPane extends JPanel implements ChangeListener {
             parameter.getMaximum(),
             new JLabel(String.valueOf(parameter.getMaximum())));
 
-        slider = new JSlider(parameter);
+        final JSlider slider = new JSlider(parameter);
         slider.setPaintTicks(true);
         slider.setSnapToTicks(true);
         slider.setPaintLabels(true);
@@ -113,6 +101,14 @@ public class JParameterPane extends JPanel implements ChangeListener {
         label = new JLabel();
         label.setText(String.valueOf(parameter.getValue()));
 
+        setLayout(new BorderLayout());
+        setBorder(new TitledBorder(
+            null,
+            parameter.getTitle(),
+            TitledBorder.LEADING,
+            TitledBorder.TOP,
+            null,
+            null));
         add(slider, BorderLayout.CENTER);
         add(label, BorderLayout.LINE_END);
     }

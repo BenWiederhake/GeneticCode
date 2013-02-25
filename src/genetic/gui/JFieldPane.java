@@ -54,14 +54,8 @@ public class JFieldPane extends JPanel implements Observer {
     /** Simulation field. */
     private final Field field;
 
-    /** Field width. */
-    private final int width;
-
-    /** Field height. */
-    private final int height;
-
     /** Last known display scale. */
-    private int lastScale;
+    private int scale;
 
     /**
      * Create a new JFieldPane.
@@ -70,10 +64,8 @@ public class JFieldPane extends JPanel implements Observer {
      */
     public JFieldPane(final Field field) {
         this.field = field;
-        this.width = Parameter.FIELD_WIDTH.getValue();
-        this.height = Parameter.FIELD_HEIGHT.getValue();
+        this.scale = Parameter.FIELD_SCALE.getValue();
 
-        rescale();
         setOpaque(true);
         if (field != null) {
             field.addObserver(this);
@@ -91,38 +83,52 @@ public class JFieldPane extends JPanel implements Observer {
      * 
      * @param g2 current graphics object
      * @param p point to draw
-     * @param scale width and height of an grid point
      */
-    private void drawRectangle(
-        final Graphics2D g2,
-        final Point p,
-        final int scale)
-    {
+    private void drawRectangle(final Graphics2D g2, final Point p) {
         g2.fillRect(1 + (p.x * scale), 1 + (p.y * scale), scale - 1, scale - 1);
     }
 
     @Override
+    public final Dimension getPreferredSize() {
+        final int width = Parameter.FIELD_WIDTH.getValue() * scale;
+        final int height = Parameter.FIELD_HEIGHT.getValue() * scale;
+
+        return new Dimension(
+            width + 1 + (GuiFrame.GAP * 2),
+            height + 1 + (GuiFrame.GAP * 2));
+    }
+
+    @Override
     public final void paint(final Graphics g) {
-        if (rescale()) {
+        final int currentScale = Parameter.FIELD_SCALE.getValue();
+
+        /* if the scale changed, revalidate bevore repainting. */
+        if (scale != currentScale) {
+            scale = currentScale;
+            revalidate();
+            repaint();
             return;
         }
 
         super.paint(g);
         final Graphics2D g2 = (Graphics2D) g;
-        final int widthpx = width * lastScale;
-        final int heightpx = height * lastScale;
+        final int fieldWidth = Parameter.FIELD_WIDTH.getValue();
+        final int fieldHeight = Parameter.FIELD_HEIGHT.getValue();
 
-        g2.translate(GuiFrame.INSET, GuiFrame.INSET);
+        final int widthpx = fieldWidth * scale;
+        final int heightpx = fieldHeight * scale;
+
+        g2.translate(GuiFrame.GAP, GuiFrame.GAP);
 
         /* grid */
         g2.setColor(Color.BLACK);
-        for (int i = 0; i < (width + 1); ++i) {
-            final int ipx = i * lastScale;
+        for (int i = 0; i < (fieldWidth + 1); ++i) {
+            final int ipx = i * scale;
             g2.drawLine(ipx, 0, ipx, heightpx);
         }
 
-        for (int i = 0; i < (height + 1); ++i) {
-            final int ipx = i * lastScale;
+        for (int i = 0; i < (fieldHeight + 1); ++i) {
+            final int ipx = i * scale;
             g2.drawLine(0, ipx, widthpx, ipx);
         }
 
@@ -133,46 +139,20 @@ public class JFieldPane extends JPanel implements Observer {
         /* grass */
         g2.setColor(Color.GREEN);
         for (final Point p : field.getGrass()) {
-            drawRectangle(g2, p, lastScale);
+            drawRectangle(g2, p);
         }
 
         /* wall */
         g2.setColor(Color.GRAY);
         for (final Point p : field.getWall()) {
-            drawRectangle(g2, p, lastScale);
+            drawRectangle(g2, p);
         }
 
         /* entites */
         g2.setColor(Color.RED);
         for (final Entity e : field.getEntities()) {
-            drawRectangle(g2, e.getPosition(), lastScale);
+            drawRectangle(g2, e.getPosition());
         }
-    }
-
-    /**
-     * Apply a new display scale if needed.
-     * 
-     * @return true if the scale changed
-     */
-    private boolean rescale() {
-        final int scale = Parameter.FIELD_SCALE.getValue();
-
-        if (scale == lastScale) {
-            return false;
-        }
-
-        final Dimension size = new Dimension(
-            (scale * width) + (GuiFrame.INSET * 2) + 1,
-            (scale * height) + (GuiFrame.INSET * 2) + 1);
-
-        setSize(size);
-        // TODO remove set[Minimum|Maximum|Preferred]Size() calls.
-        setPreferredSize(size);
-        setMinimumSize(size);
-        setMaximumSize(size);
-        lastScale = scale;
-        repaint();
-        return true;
     }
 
     @Override

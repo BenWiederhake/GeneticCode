@@ -35,6 +35,8 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.border.EmptyBorder;
 
 /**
  * GeneticCode main gui frame.
@@ -45,14 +47,17 @@ public class GuiFrame extends JFrame implements Runnable {
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
-    /** Default inter-element spacing. */
-    public static final int INSET = 5;
+    /** Default space between elements. */
+    public static final int GAP = 5;
 
     /** Displays the field. */
     private final JFieldPane fieldPane;
 
     /** Displays the settings. */
     private final JSettingsPane settingsPane;
+
+    /** Displays the program statistics. */
+    private final JProgramStatTable programStatTable;
 
     /** Displays the status. */
     private final JStatusPane statusPane;
@@ -65,24 +70,48 @@ public class GuiFrame extends JFrame implements Runnable {
     public GuiFrame(final Field field) {
         super("Genetic Code");
 
-        this.settingsPane = new JSettingsPane(field, false);
+        this.settingsPane = new JSettingsPane(false);
         this.fieldPane = new JFieldPane(field);
         this.statusPane = new JStatusPane(field, this);
+        this.programStatTable = new JProgramStatTable(field);
+
+        final JScrollPane scrollSettings = new JScrollPane(
+            settingsPane,
+            JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        final JScrollPane scrollTable = new JScrollPane(
+            programStatTable,
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
         final JScrollPane scrollField = new JScrollPane(
             fieldPane,
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-        final JPanel contentPane = new JPanel();
-        contentPane.setLayout(new BorderLayout(0, 0));
-        contentPane.add(settingsPane, BorderLayout.WEST);
-        contentPane.add(scrollField, BorderLayout.CENTER);
-        contentPane.add(statusPane, BorderLayout.SOUTH);
+        final JSplitPane verticalSplit = new JSplitPane(
+            JSplitPane.VERTICAL_SPLIT,
+            true,
+            scrollTable,
+            scrollSettings
+            );
 
-        setContentPane(contentPane);
+        final JSplitPane horizontalSplit = new JSplitPane(
+            JSplitPane.HORIZONTAL_SPLIT,
+            true,
+            verticalSplit,
+            scrollField);
+
+        final JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.setBorder(new EmptyBorder(GAP, GAP, GAP, GAP));
+        panel.add(horizontalSplit, BorderLayout.CENTER);
+        panel.add(statusPane, BorderLayout.SOUTH);
+
         setLocationByPlatform(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setContentPane(panel);
         pack();
     }
 

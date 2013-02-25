@@ -28,77 +28,72 @@
 
 package genetic.gui;
 
-import genetic.data.Field;
 import genetic.data.Parameter;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.Scrollable;
 
 /**
  * {@link JPanel} displaying the simulation's settings.
  * 
  * @author Tim Wiederhake
  */
-public class JSettingsPane extends JPanel {
+public class JSettingsPane extends JPanel implements Scrollable {
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
-
-    /** Preferred width. */
-    public static final int PREFERRED_WIDTH = 300;
-
-    /** Program statistics. */
-    private final JProgramStatTable programStatTable;
 
     /**
      * Create a new JSettingsPane.
      * 
-     * @param field simulation field
      * @param mutable change read-only parameters anyway
      */
-    public JSettingsPane(final Field field, final boolean mutable) {
-        this.programStatTable = new JProgramStatTable(field);
-
-        final JScrollPane scrollTable = new JScrollPane(programStatTable);
-        // TODO remove set[Minimum|Maximum|Preferred]Size() calls.
-        scrollTable.setPreferredSize(new Dimension(
-            PREFERRED_WIDTH,
-            PREFERRED_WIDTH / 2));
-        scrollTable.setMaximumSize(new Dimension(
-            PREFERRED_WIDTH,
-            PREFERRED_WIDTH));
-
-        final JPanel parameterPanel = new JPanel();
-        parameterPanel.setLayout(
-            new BoxLayout(parameterPanel, BoxLayout.Y_AXIS));
+    public JSettingsPane(final boolean mutable) {
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         for (final Parameter p : Parameter.values()) {
-            parameterPanel.add(new JParameterPane(p, mutable));
-        }
-
-        final JScrollPane scrollSettings = new JScrollPane(
-            parameterPanel,
-            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
-        scrollSettings.getVerticalScrollBar().setUnitIncrement(GuiFrame.INSET);
-        // TODO remove set[Minimum|Maximum|Preferred]Size() calls.
-        scrollSettings.setPreferredSize(new Dimension(
-            JSettingsPane.PREFERRED_WIDTH,
-            0));
-
-
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(scrollSettings);
-        if (!mutable) {
-            add(scrollTable);
+            add(new JParameterPane(p, mutable));
         }
     }
 
     @Override
     protected final Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
+    }
+
+    @Override
+    public final Dimension getPreferredScrollableViewportSize() {
+        return null;
+    }
+
+    @Override
+    public final int getScrollableBlockIncrement(
+        final Rectangle visibleRect,
+        final int orientation,
+        final int direction)
+    {
+        return getComponent(0).getHeight();
+    }
+
+    @Override
+    public final boolean getScrollableTracksViewportHeight() {
+        return false;
+    }
+
+    @Override
+    public final boolean getScrollableTracksViewportWidth() {
+        return true;
+    }
+
+    @Override
+    public final int getScrollableUnitIncrement(
+        final Rectangle visibleRect,
+        final int orientation,
+        final int direction)
+    {
+        return getComponent(0).getHeight();
     }
 }

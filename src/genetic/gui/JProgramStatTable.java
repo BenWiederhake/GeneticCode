@@ -35,6 +35,7 @@ import genetic.data.Field;
 import genetic.data.Program;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -66,6 +67,15 @@ Comparator<Entry<Program, Integer>>
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** Height of a row. */
+    private static final int ROWHEIGHT = 20;
+
+    /** Width of first column. */
+    private static final int COLUMNWIDTH = 50;
+
+    /** Default size. */
+    private static final Dimension DEFAULT_SIZE = new Dimension(300, 150);
+
     /** TableModelListeners. */
     private final Vector<TableModelListener> listener;
 
@@ -93,8 +103,11 @@ Comparator<Entry<Program, Integer>>
 
         setModel(this);
         setDefaultRenderer(Program.class, this);
-        setRowHeight(20);
-        // TODO adjust column width
+        setRowHeight(ROWHEIGHT);
+
+        /* Why do we have to set MaxWidth as well? */
+        getColumnModel().getColumn(0).setPreferredWidth(COLUMNWIDTH);
+        getColumnModel().getColumn(0).setMaxWidth(COLUMNWIDTH * 2);
     }
 
     @Override
@@ -136,6 +149,11 @@ Comparator<Entry<Program, Integer>>
         } else {
             return "Program";
         }
+    }
+
+    @Override
+    public final Dimension getPreferredScrollableViewportSize() {
+        return DEFAULT_SIZE;
     }
 
     @Override
