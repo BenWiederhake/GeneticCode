@@ -108,7 +108,7 @@ public final class Genetic {
     }
 
     /**
-     * Not meant to be instanciated.
+     * Not meant to be instantiated.
      */
     private Genetic() {
     }

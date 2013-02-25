@@ -114,7 +114,14 @@ public class Field extends Observable {
         return grass.remove(point);
     }
 
-    /* wrap around corners etc.; returns null if illegal coordinate */
+    /**
+     * Wrap the given point around edges of the field. The returned point will
+     * represent a valid position inside the field.
+     * 
+     * @param p the given point. Must not be <code>null</code>
+     * @return The wrapped point, never <code>null</code>
+     * @throws NullPointerException if the given point was <code>null</code>
+     */
     public final Point sanitizeCoordinates(final Point p) {
         final int width = Parameter.FIELD_WIDTH.getValue();
         final int height = Parameter.FIELD_HEIGHT.getValue();
