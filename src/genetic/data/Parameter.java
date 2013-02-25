@@ -29,8 +29,21 @@
 package genetic.data;
 
 import java.util.Random;
+import java.util.Vector;
 
-public enum Parameter {
+import javax.swing.BoundedRangeModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+/**
+ * This simulation's parameter.
+ * 
+ * This class implements {@link BoundedRangeModel} for convenient access through
+ * default java swing sliders etc.
+ * 
+ * @author Tim Wiederhake
+ */
+public enum Parameter implements BoundedRangeModel {
     /** Field width. */
     FIELD_WIDTH("Field width", 1, 200, 512, false),
 
@@ -94,8 +107,14 @@ public enum Parameter {
     /** Current value. */
     private int value;
 
+    /** Avoid update bursts when dragging a slider. */
+    private boolean valueIsAdjusting;
+
     /** If this parameter is changable during simulation. */
     private boolean mutable;
+
+    /** ChangeListeners. */
+    private final Vector<ChangeListener> changeListener;
 
     /**
      * Create a new Parameter.
@@ -118,6 +137,18 @@ public enum Parameter {
         this.value = value;
         this.maxValue = maxValue;
         this.mutable = mutable;
+        this.changeListener = new Vector<ChangeListener>();
+    }
+
+    @Override
+    public void addChangeListener(final ChangeListener x) {
+        changeListener.add(x);
+    }
+
+    @Override
+    public int getExtent() {
+        /* ignore */
+        return 0;
     }
 
     /**
@@ -125,7 +156,8 @@ public enum Parameter {
      * 
      * @return the maximum value
      */
-    public final int getMaxValue() {
+    @Override
+    public final int getMaximum() {
         return maxValue;
     }
 
@@ -134,7 +166,8 @@ public enum Parameter {
      * 
      * @return the minimum value
      */
-    public final int getMinValue() {
+    @Override
+    public final int getMinimum() {
         return minValue;
     }
 
@@ -152,17 +185,74 @@ public enum Parameter {
      * 
      * @return the current value
      */
+    @Override
     public final int getValue() {
         return value;
     }
 
+    @Override
+    public boolean getValueIsAdjusting() {
+        return valueIsAdjusting;
+    }
+
+    /**
+     * Returns if this parameter can be changed during simulation.
+     * 
+     * @return if this parameter can be changed during simulation
+     */
     public final boolean isMutable() {
         return mutable;
     }
 
+    @Override
+    public void removeChangeListener(final ChangeListener x) {
+        changeListener.remove(x);
+    }
+
+    @Override
+    public void setExtent(final int newExtent) {
+        /* ignore */
+    }
+
+    @Override
+    public void setMaximum(final int newMaximum) {
+        /* ignore */
+    }
+
+    @Override
+    public void setMinimum(final int newMinimum) {
+        /* ignore */
+    }
+
+    @Override
+    public void setRangeProperties(
+        final int val,
+        final int extent,
+        final int min,
+        final int max,
+        final boolean adjusting)
+    {
+        setValueIsAdjusting(adjusting);
+        setValue(val);
+    }
+
+    @Override
     public final void setValue(final int value) {
-        if (mutable) {
-            this.value = value;
+        if (!mutable) {
+            return;
         }
+
+        this.value = Math.min(maxValue, Math.max(minValue, value));
+
+        if (!valueIsAdjusting) {
+            for (final ChangeListener x : changeListener) {
+                x.stateChanged(new ChangeEvent(this));
+            }
+        }
+    }
+
+    @Override
+    public void setValueIsAdjusting(final boolean b) {
+        valueIsAdjusting = b;
     }
 }

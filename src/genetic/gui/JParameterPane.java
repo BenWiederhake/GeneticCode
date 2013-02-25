@@ -70,17 +70,13 @@ public class JParameterPane extends JPanel implements ChangeListener {
             new Hashtable<Integer, JLabel>();
 
         labelTable.put(
-            parameter.getMinValue(),
-            new JLabel(String.valueOf(parameter.getMinValue())));
+            parameter.getMinimum(),
+            new JLabel(String.valueOf(parameter.getMinimum())));
         labelTable.put(
-            parameter.getMaxValue(),
-            new JLabel(String.valueOf(parameter.getMaxValue())));
+            parameter.getMaximum(),
+            new JLabel(String.valueOf(parameter.getMaximum())));
 
-
-        slider = new JSlider(
-            parameter.getMinValue(),
-            parameter.getMaxValue(),
-            parameter.getValue());
+        slider = new JSlider(parameter);
         slider.setPaintTicks(true);
         slider.setSnapToTicks(true);
         slider.setPaintLabels(true);
