@@ -37,17 +37,32 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+/**
+ * {@link JPanel} displaying the simulation's settings.
+ * 
+ * @author Tim Wiederhake
+ */
 public class JSettingsPane extends JPanel {
+    /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** Preferred width. */
     public static final int PREFERRED_WIDTH = 300;
 
+    /** Program statistics. */
     private final JProgramStatTable programStatTable;
 
+    /**
+     * Create a new JSettingsPane.
+     * 
+     * @param field simulation field
+     * @param mutable change read-only parameters anyway
+     */
     public JSettingsPane(final Field field, final boolean mutable) {
         this.programStatTable = new JProgramStatTable(field);
 
         final JScrollPane scrollTable = new JScrollPane(programStatTable);
+        // TODO remove set[Minimum|Maximum|Preferred]Size() calls.
         scrollTable.setPreferredSize(new Dimension(
             PREFERRED_WIDTH,
             PREFERRED_WIDTH / 2));
@@ -69,6 +84,7 @@ public class JSettingsPane extends JPanel {
             JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         scrollSettings.getVerticalScrollBar().setUnitIncrement(GuiFrame.INSET);
+        // TODO remove set[Minimum|Maximum|Preferred]Size() calls.
         scrollSettings.setPreferredSize(new Dimension(
             JSettingsPane.PREFERRED_WIDTH,
             0));
@@ -79,5 +95,10 @@ public class JSettingsPane extends JPanel {
         if (!mutable) {
             add(scrollTable);
         }
+    }
+
+    @Override
+    protected final Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
     }
 }

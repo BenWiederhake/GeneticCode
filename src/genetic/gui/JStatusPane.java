@@ -50,9 +50,16 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+/**
+ * This class represents the action executed on pressing the "about" button.
+ * 
+ * @author Tim Wiederhake
+ */
 class ActionAboutButton extends JDialog implements ActionListener {
+    /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** License text. TODO This should be an html-file in the "res" package. */
     private static final String LICENSE_TEXT =
         "<html><p><b>GeneticCode - A simple evolving code / automaton sandbox."
             + "</b></p><p>Copyright (c) 2013, Tim Wiederhake</p><p>Please repo"
@@ -80,6 +87,11 @@ class ActionAboutButton extends JDialog implements ActionListener {
             + "S SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<"
             + "/p></html>";
 
+    /**
+     * Create a new ActionAboutButton.
+     * 
+     * @param guiFrame parent frame
+     */
     public ActionAboutButton(final GuiFrame guiFrame) {
         super(guiFrame);
         setTitle("About GeneticCode");
@@ -96,12 +108,29 @@ class ActionAboutButton extends JDialog implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         setVisible(true);
     }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
 }
 
 
+/**
+ * This class represents the action executed on pressing the "help" button.
+ * 
+ * @author user
+ * 
+ */
 class ActionHelpButton extends JDialog implements ActionListener {
+    /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Create a new ActionHelpButton.
+     * 
+     * @param guiFrame parent frame
+     */
     public ActionHelpButton(final GuiFrame guiFrame) {
         super(guiFrame);
         setTitle("Icon reference");
@@ -132,6 +161,12 @@ class ActionHelpButton extends JDialog implements ActionListener {
         setVisible(true);
     }
 
+    /**
+     * Add description for a {@link Command}.
+     * 
+     * @param c command to describe
+     * @param s text
+     */
     private void addDesc(final Command c, final String s) {
         final JLabel label = new JLabel(
             s,
@@ -140,17 +175,37 @@ class ActionHelpButton extends JDialog implements ActionListener {
         label.setHorizontalAlignment(SwingConstants.LEFT);
         add(label);
     }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
 }
 
+/**
+ * {@link JPanel} displaying the simulation's status.
+ * 
+ * @author Tim Wiederhake
+ */
 public class JStatusPane extends JPanel implements Observer {
+    /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** Simulation field. */
     private final Field field;
 
+    /** Display the simulation steps. */
     private final JTextField stepField;
 
+    /** Display the simulation's total population. */
     private final JTextField populationField;
 
+    /**
+     * Create a new JStatusPane.
+     * 
+     * @param field simulation field
+     * @param guiFrame parent frame
+     */
     public JStatusPane(final Field field, final GuiFrame guiFrame) {
         this.field = field;
         this.stepField = new JTextField(6);
@@ -161,11 +216,13 @@ public class JStatusPane extends JPanel implements Observer {
 
         stepLabel.setLabelFor(stepField);
         stepField.setEditable(false);
+        // TODO remove set[Minimum|Maximum|Preferred]Size() calls.
         stepField.setMaximumSize(new Dimension(50, Integer.MAX_VALUE));
         stepField.setHorizontalAlignment(SwingConstants.RIGHT);
 
         populationLabel.setLabelFor(populationField);
         populationField.setEditable(false);
+        // TODO remove set[Minimum|Maximum|Preferred]Size() calls.
         populationField.setMaximumSize(new Dimension(50, Integer.MAX_VALUE));
         populationField.setHorizontalAlignment(SwingConstants.RIGHT);
 
@@ -196,6 +253,11 @@ public class JStatusPane extends JPanel implements Observer {
             field.addObserver(this);
             update(null, null);
         }
+    }
+
+    @Override
+    protected final Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
     }
 
     @Override

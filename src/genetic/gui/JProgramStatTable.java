@@ -53,19 +53,33 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
+/**
+ * A {@link JTable} displaying the simulation's entity statistics.
+ * 
+ * @author Tim Wiederhake
+ */
 public class JProgramStatTable
 extends JTable
 implements TableCellRenderer, TableModel, Observer,
 Comparator<Entry<Program, Integer>>
 {
+    /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** TableModelListeners. */
     private final Vector<TableModelListener> listener;
 
+    /** Entity statistics. */
     private Vector<Entry<Program, Integer>> data;
 
+    /** Simulation field. */
     private final Field field;
 
+    /**
+     * Create a new JProgramStatTable.
+     * 
+     * @param field simulation field
+     */
     public JProgramStatTable(final Field field) {
         this.listener = new Vector<TableModelListener>();
         this.data = new Vector<Map.Entry<Program, Integer>>();
@@ -89,7 +103,12 @@ Comparator<Entry<Program, Integer>>
     }
 
     @Override
-    public int compare(
+    protected final Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
+
+    @Override
+    public final int compare(
         final Entry<Program, Integer> o1,
         final Entry<Program, Integer> o2)
     {
@@ -125,7 +144,7 @@ Comparator<Entry<Program, Integer>>
     }
 
     @Override
-    public Component getTableCellRendererComponent(
+    public final Component getTableCellRendererComponent(
         final JTable table,
         final Object value,
         final boolean isSelected,
@@ -186,7 +205,7 @@ Comparator<Entry<Program, Integer>>
     }
 
     @Override
-    public void update(final Observable o, final Object arg) {
+    public final void update(final Observable o, final Object arg) {
         final HashMap<Program, Integer> unsorted =
             new HashMap<Program, Integer>();
 

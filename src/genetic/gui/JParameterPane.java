@@ -40,19 +40,40 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+/**
+ * {@link JPanel} displaying the simulation's {@link Parameter}.
+ * 
+ * @author Tim Wiederhake
+ */
 public class JParameterPane extends JPanel implements ChangeListener {
+    /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** The parameter this Panel represents. */
     private final Parameter parameter;
 
+    /** Label displaying the current value. */
     private final JLabel label;
 
+    /** Slider to adjust this parameter's value. */
     private final JSlider slider;
 
+    /**
+     * Create a new JParameterPane.
+     * 
+     * @param parameter this pane's parameter
+     */
     public JParameterPane(final Parameter parameter) {
         this(parameter, false);
     }
 
+    /**
+     * Create a new JParameterPane that might be allowed to adjust an parameter
+     * even though it is not mutable. TODO This method should be removed.
+     * 
+     * @param parameter this pane's parameter
+     * @param adjust if this pane is allowed to change that parameter
+     */
     public JParameterPane(final Parameter parameter, final boolean adjust) {
         this.parameter = parameter;
 
@@ -94,6 +115,11 @@ public class JParameterPane extends JPanel implements ChangeListener {
 
         add(slider, BorderLayout.CENTER);
         add(label, BorderLayout.LINE_END);
+    }
+
+    @Override
+    protected final Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
     }
 
     @Override

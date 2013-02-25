@@ -42,17 +42,32 @@ import java.util.Observer;
 
 import javax.swing.JPanel;
 
+/**
+ * {@link JPanel} displaying the simulation's {@link Field}.
+ * 
+ * @author Tim Wiederhake
+ */
 public class JFieldPane extends JPanel implements Observer {
+    /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** Simulation field. */
     private final Field field;
 
+    /** Field width. */
     private final int width;
 
+    /** Field height. */
     private final int height;
 
+    /** Last known display scale. */
     private int lastScale;
 
+    /**
+     * Create a new JFieldPane.
+     * 
+     * @param field simulation field
+     */
     public JFieldPane(final Field field) {
         this.field = field;
         this.width = Parameter.FIELD_WIDTH.getValue();
@@ -65,6 +80,19 @@ public class JFieldPane extends JPanel implements Observer {
         }
     }
 
+    @Override
+    protected final Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
+
+    /**
+     * Draw an single point correctly scaled on the current {@link Graphics2D}
+     * object.
+     * 
+     * @param g2 current graphics object
+     * @param p point to draw
+     * @param scale width and height of an grid point
+     */
     private void drawRectangle(
         final Graphics2D g2,
         final Point p,
@@ -121,6 +149,11 @@ public class JFieldPane extends JPanel implements Observer {
         }
     }
 
+    /**
+     * Apply a new display scale if needed.
+     * 
+     * @return true if the scale changed
+     */
     private boolean rescale() {
         final int scale = Parameter.FIELD_SCALE.getValue();
 
@@ -133,6 +166,7 @@ public class JFieldPane extends JPanel implements Observer {
             (scale * height) + (GuiFrame.INSET * 2) + 1);
 
         setSize(size);
+        // TODO remove set[Minimum|Maximum|Preferred]Size() calls.
         setPreferredSize(size);
         setMinimumSize(size);
         setMaximumSize(size);
@@ -142,7 +176,7 @@ public class JFieldPane extends JPanel implements Observer {
     }
 
     @Override
-    public void update(final Observable o, final Object arg) {
+    public final void update(final Observable o, final Object arg) {
         repaint();
     }
 }

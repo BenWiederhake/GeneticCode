@@ -37,13 +37,22 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+/**
+ * GeneticCode main gui frame.
+ * 
+ * @author Tim Wiederhake
+ */
 public class GuiFrame extends JFrame implements Runnable {
+    /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
+    /** Default frame width. */
     private static final int FRAME_WIDTH = 1000;
 
+    /** Default frame height. */
     private static final int FRAME_HEIGHT = 800;
 
+    /** Default inter-element spacing. */
     public static final int INSET = 5;
 
     /** Displays the field. */
@@ -52,8 +61,14 @@ public class GuiFrame extends JFrame implements Runnable {
     /** Displays the settings. */
     private final JSettingsPane settingsPane;
 
+    /** Displays the status. */
     private final JStatusPane statusPane;
 
+    /**
+     * Create a new GuiFrame.
+     * 
+     * @param field simulation field to display
+     */
     public GuiFrame(final Field field) {
         super("Genetic Code");
 
@@ -78,6 +93,11 @@ public class GuiFrame extends JFrame implements Runnable {
         contentPane.add(statusPane, BorderLayout.SOUTH);
         statusPane.setLayout(new BoxLayout(statusPane, BoxLayout.X_AXIS));
         setContentPane(contentPane);
+    }
+
+    @Override
+    protected final Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
     }
 
     @Override
