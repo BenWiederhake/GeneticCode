@@ -244,10 +244,8 @@ public enum Parameter implements BoundedRangeModel {
 
         this.value = Math.min(maxValue, Math.max(minValue, value));
 
-        if (!valueIsAdjusting) {
-            for (final ChangeListener x : changeListener) {
-                x.stateChanged(new ChangeEvent(this));
-            }
+        for (final ChangeListener x : changeListener) {
+            x.stateChanged(new ChangeEvent(this));
         }
     }
 

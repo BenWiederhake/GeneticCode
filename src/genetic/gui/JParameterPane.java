@@ -76,9 +76,9 @@ public class JParameterPane extends JPanel implements ChangeListener {
      */
     public JParameterPane(final Parameter parameter, final boolean adjust) {
         this.parameter = parameter;
+        parameter.addChangeListener(this);
 
         setLayout(new BorderLayout(GuiFrame.INSET, 0));
-
         setBorder(new TitledBorder(
             null,
             parameter.getTitle(),
@@ -124,8 +124,6 @@ public class JParameterPane extends JPanel implements ChangeListener {
 
     @Override
     public final void stateChanged(final ChangeEvent e) {
-        final int value = slider.getValue();
-        parameter.setValue(value);
-        label.setText(String.valueOf(value));
+        label.setText(String.valueOf(parameter.getValue()));
     }
 }
