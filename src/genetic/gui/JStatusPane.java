@@ -36,8 +36,10 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.InputStream;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Scanner;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -59,34 +61,6 @@ class ActionAboutButton extends JDialog implements ActionListener {
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
-    /** License text. TODO This should be an html-file in the "res" package. */
-    private static final String LICENSE_TEXT =
-        "<html><p><b>GeneticCode - A simple evolving code / automaton sandbox."
-            + "</b></p><p>Copyright (c) 2013, Tim Wiederhake</p><p>Please repo"
-            + "rt any issues to <a href=\"https://github.com/twied/GeneticCode"
-            + "/issues\">https://github.com/twied/GeneticCode/issues</a></p><p"
-            + ">Redistribution and use in source and binary forms, with or wit"
-            + "hout modification, are permitted provided that the following co"
-            + "nditions are met:<ul><li>Redistributions of source code must re"
-            + "tain the above copyright notice, this list of conditions and th"
-            + "e following disclaimer.</li><li>Redistributions in binary form "
-            + "must reproduce the above copyright notice, this list of conditi"
-            + "ons and the following disclaimer in the documentation and/or ot"
-            + "her materials provided with the distribution.</li></ul></p><p>T"
-            + "HIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUT"
-            + "ORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,"
-            + "BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY A"
-            + "ND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT"
-            + " SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY D"
-            + "IRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTI"
-            + "AL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBST"
-            + "ITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSI"
-            + "NESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILIT"
-            + "Y, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NE"
-            + "GLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THI"
-            + "S SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.<"
-            + "/p></html>";
-
     /**
      * Create a new ActionAboutButton.
      * 
@@ -97,8 +71,11 @@ class ActionAboutButton extends JDialog implements ActionListener {
         setTitle("About GeneticCode");
         setSize(450, 300);
         setLocationRelativeTo(guiFrame);
-        final JEditorPane editorPane =
-            new JEditorPane("text/html", LICENSE_TEXT);
+
+        final InputStream input = ActionAboutButton.class.getResourceAsStream(
+            "/genetic/res/license.html");
+        final String text = new Scanner(input).useDelimiter("\\Z").next();
+        final JEditorPane editorPane = new JEditorPane("text/html", text);
         editorPane.setEditable(false);
         editorPane.setOpaque(false);
         add(new JScrollPane(editorPane));
