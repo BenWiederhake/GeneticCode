@@ -64,6 +64,16 @@ public final class Genetic {
     /* Static initialization, but it's an empty constructor */
     private static final Statistics STATISTICS = new Statistics();
 
+    private static boolean displayGui = true;
+
+    private static boolean goFast = false;
+
+    /**
+     * When stepLimit is &gt;= 0, then the step number stepLimit+1 won't be
+     * reached, because the simulation terminates the VM before that.
+     */
+    private static int stepLimit = -1;
+    
     public static ImageIcon loadIcon(final String path) {
         return new ImageIcon(Genetic.class.getResource(path));
     }
@@ -79,22 +89,26 @@ public final class Genetic {
             COMMAND_ICONS.put(c, image);
         }
 
-        /* load & prepare (in constructor) */
+        /* Load & prepare (in constructor) */
         final Field field = new Field();
         STATISTICS.update(field);
 
-        /* show the gui */
-        final Gui guiFrame = new Gui(field);
-        EventQueue.invokeLater(guiFrame);
+        /* Show the GUI */
+        if (displayGui) {
+            final Gui guiFrame = new Gui(field);
+            EventQueue.invokeLater(guiFrame);
+        }
 
-        /* start the simulation */
-        while (true) {
-            try {
-                final double sleepTime =
-                    MS_PER_SECOND / Parameter.SIMULATION_SPEED.getValue();
-                Thread.sleep((int) sleepTime);
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
+        /* Start the simulation */
+        while (stepLimit < 0 || field.getStep() < stepLimit) {
+            if (!goFast) {
+                try {
+                    final double sleepTime =
+                        MS_PER_SECOND / Parameter.SIMULATION_SPEED.getValue();
+                    Thread.sleep((int) sleepTime);
+                } catch (final InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             field.tick();
@@ -171,6 +185,23 @@ public final class Genetic {
                     + "\" because:\n"
                     + e.getMessage());
             }
+        } else if (flag.equals("--automate-for")) {
+            /* --automate-for implies --no-gui --go-fast --exit-after */
+            displayGui = false;
+            goFast = true;
+            stepLimit = parseInt(
+                poll(argIter, "--automate-for", 0, 1),
+                "--automate-for",
+                1);
+        } else if ("--no-gui".equals(flag)) {
+            displayGui = false;
+        } else if ("--go-fast".equals(flag)) {
+            goFast = true;
+        } else if ("--exit-after".equals(flag)) {
+            stepLimit = parseInt(
+                poll(argIter, "--exit-after", 0, 1),
+                "--exit-after",
+                1);
         } else {
             throw new IllegalArgumentException("Unrecognized option: " + flag);
         }
