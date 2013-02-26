@@ -131,6 +131,16 @@ public final class Genetic {
         } else if ("--help".equals(flag)) {
             printFile(USAGE_FILE, System.out);
             System.exit(0);
+        } else if ("--set".equals(flag)) {
+            final String paramName = poll(argIter, "--set", 0, 2);
+            final int value =
+                parseInt(poll(argIter, "--set", 1, 2), "--set", 2);
+            /*
+             * valueOf() throws IllegalArgumentException if paramName is
+             * unknown, and never returns null.
+             */
+            final Parameter p = Parameter.valueOf(paramName);
+            p.setValue(value);
         } else {
             throw new IllegalArgumentException("Unrecognized option: " + flag);
         }
@@ -164,6 +174,78 @@ public final class Genetic {
                 e.printStackTrace();
                 System.exit(1);
             }
+        }
+    }
+
+    /**
+     * Tries to interpret <code>what</code> as an integer and returns it. If
+     * something goes wrong, it throws an exception with information about the
+     * error.
+     * 
+     * @param what the string to parse as an integer
+     * @param flag the flag whose argument we are currently parsing. Only used
+     *            for error detail information.
+     * @param argNo the number of this flag-argument. Only used for error detail
+     *            information.
+     * @return the represented integer
+     * @throws IllegalArgumentException if <code>what</code> did not represent a
+     *             valid integer.
+     */
+    private static int parseInt(
+        final String what,
+        final String flag,
+        final int argNo)
+    {
+        try {
+            return Integer.parseInt(what);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Couldn't parse argument #"
+                + argNo
+                + " to "
+                + flag
+                + ":\nExpected integer value, found \""
+                + what
+                + "\" instead ("
+                + e.getLocalizedMessage()
+                + ").");
+        }
+    }
+
+    /**
+     * Polls another flag-argument for the current <code>flag</code> from the
+     * given <code>argIter</code> and returns it. If there are not enough
+     * commandline-arguments, it throws an exception with information about the
+     * error.
+     * 
+     * @param argIter the {@link Iterator} over commandline-arguments
+     * @param flag the flag whose argument we are currently parsing. Only used
+     *            for error detail information.
+     * @param found the amount of flag-arguments previously found. Only used for
+     *            error detail information.
+     * @param expected the total amount of flag-arguments this flag requires.
+     *            Only used for error detail information.
+     * @return the next flag-argument, if there is one.
+     * @throws IllegalArgumentException if there is no next argument
+     */
+    private static String poll(
+        final Iterator<String> argIter,
+        final String flag,
+        final int found,
+        final int expected)
+    {
+        if (argIter.hasNext()) {
+            return argIter.next();
+        } else if (expected > 1) {
+            throw new IllegalArgumentException("Missing argument to "
+                + flag
+                + " (expected "
+                + expected
+                + " arguments, found "
+                + found
+                + ")");
+        } else /* if (expected == 1) */{
+            throw new IllegalArgumentException(
+                "Missing argument to " + flag);
         }
     }
 

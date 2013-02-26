@@ -6,6 +6,28 @@ Usage: java -jar GeneticCode.jar <OPTIONS>
 The following <OPTIONS> exits:
 --help: Displays this help.
 --license: Displays further information about the copyright.
+--set <PARAM> <N>: Sets the simulation parameter <PARAM> to the integer
+  value <N>, which is silently capped by the same minimum / maximum that
+  is displayed in the GUI.
+  The following values for <PARAM> are accepted (case-sensitive):
+  * FIELD_WIDTH, FIELD_HEIGHT: Field dimensions in number of cells.
+    Note that the field always wraps around.
+  * INITIAL_FOOD: Initial food on the field in percent.
+  * INITIAL_WALL: Initial walls on the field in percent.
+  * INITIAL_POPULATION: Initial population size.
+  * FIELD_SCALE: Field scale.
+  * GRID_GAP: Grid gap width (only affects display).
+  * GRID_VISIBILITY: Whether or not the grid should be visible.
+    1 for visible / "on", 0 for not visible / "off"  (only affects display).
+  * SIMULATION_SPEED: Simulation speed in ticks per second.
+  * MUTATION_RATE: Mutation rate in percent.
+    Note that always only one entity mutates.
+  * REGROWTH_RATE: Regrowth rate in food per 10 ticks.
+  * HEALTH_PER_FOOD: Health per Food.
+  * HEALTH_PER_STEP: Health loss per step.
+  * REPRODUCTION_HP: Health required before reproduction happens.
+    Note that when a entity splits, both offsprings each have
+    half the health of the original entity.
 
 If a flag is mentioned multiple times (for example: --seed 1 --seed 2),
 then the last occurrence will be used (i.e.: -seed 2) unless stated otherwise.
