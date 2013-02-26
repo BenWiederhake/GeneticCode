@@ -244,25 +244,42 @@ public class JStatusPane extends JPanel implements Observer {
     private final JTextField populationField;
 
     /**
+     * Display the simulation's total population difference to the last time we
+     * could display it.
+     */
+    private final JTextField populationDiffField;
+
+    /** The total population to the last time we could display it. */
+    private int lastPopulation;
+
+    /**
      * Create a new JStatusPane.
      * 
      * @param field simulation field
      * @param parentFrame parent frame
      */
     public JStatusPane(final Field field, final JFrame parentFrame) {
+        if (field == null) {
+            throw new NullPointerException();
+        }
+
+        this.field = field;
         this.stepField = new JTextField(TEXTFIELD_WIDTH);
         this.populationField = new JTextField(TEXTFIELD_WIDTH);
-        this.field = field;
-        if (field != null) {
-            field.addObserver(this);
-            update(null, null);
-        }
+        this.lastPopulation = 0;
+        this.populationDiffField = new JTextField(TEXTFIELD_WIDTH);
 
         stepField.setEditable(false);
         stepField.setHorizontalAlignment(SwingConstants.RIGHT);
 
         populationField.setEditable(false);
         populationField.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        populationDiffField.setEditable(false);
+        populationDiffField.setHorizontalAlignment(SwingConstants.LEFT);
+
+        field.addObserver(this);
+        update(null, null);
 
         final JLabel stepLabel = new JLabel("Steps: ");
         final JLabel populationLabel = new JLabel("Population: ");
@@ -288,6 +305,7 @@ public class JStatusPane extends JPanel implements Observer {
         labelPane.add(Box.createHorizontalStrut(Gui.GAP * 2));
         labelPane.add(populationLabel);
         labelPane.add(populationField);
+        labelPane.add(populationDiffField);
 
         final JPanel buttonPane = new JPanel();
         buttonPane.add(helpButton);
@@ -296,7 +314,6 @@ public class JStatusPane extends JPanel implements Observer {
 
         setLayout(new BorderLayout());
         add(labelPane, BorderLayout.WEST);
-        add(Box.createGlue(), BorderLayout.CENTER);
         add(buttonPane, BorderLayout.EAST);
     }
 
@@ -308,6 +325,14 @@ public class JStatusPane extends JPanel implements Observer {
     @Override
     public final void update(final Observable o, final Object arg) {
         stepField.setText(String.valueOf(field.getStep()));
-        populationField.setText(String.valueOf(field.getEntities().size()));
+        final int newPopulation = field.getEntities().size();
+        populationField.setText(String.valueOf(newPopulation));
+        /* Display "0" when population stays same */
+        final String sign = (newPopulation > lastPopulation) ? "+" : "";
+        populationDiffField.setText("("
+            + sign
+            + (newPopulation - lastPopulation)
+            + ")");
+        lastPopulation = newPopulation;
     }
 }
