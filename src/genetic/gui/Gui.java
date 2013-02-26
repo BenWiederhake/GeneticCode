@@ -29,6 +29,7 @@
 
 package genetic.gui;
 
+import genetic.Genetic;
 import genetic.data.Field;
 
 import java.awt.BorderLayout;
@@ -86,6 +87,9 @@ public class Gui implements Runnable, KeyEventDispatcher {
                  * application the same way anything else would.
                  */
                 System.exit(0);
+                return true;
+            case KeyEvent.VK_P:
+                Genetic.setPaused(!Genetic.isPaused());
                 return true;
             default:
                 /* We have not consumed the event */

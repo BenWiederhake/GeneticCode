@@ -171,7 +171,8 @@ class ActionHelpButton extends JDialog implements ActionListener {
         addDesc(Command.SKIP2, "Skip two commands");
         addDesc(Command.SLEEP, "Do nothing");
         addDesc("Ctrl-Q, Ctrl-W = Close the program immediately.");
-        addDesc(Genetic.loadIcon(JStatusPane.IMG_PAUSE), "Pause Simulation");
+        addDesc(Genetic.loadIcon(JStatusPane.IMG_PAUSE),
+            "Pause/Unpause Simulation (or Ctrl-P)");
         addDesc(Genetic.loadIcon(JStatusPane.IMG_GO_FAST),
             "Ignore simulation speed settings: " +
                 "Go as fast as possible.");
