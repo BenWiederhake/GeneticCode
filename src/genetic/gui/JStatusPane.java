@@ -160,6 +160,7 @@ class ActionHelpButton extends JDialog implements ActionListener {
         addDesc(Command.SKIP, "Skip one command");
         addDesc(Command.SKIP2, "Skip two commands");
         addDesc(Command.SLEEP, "Do nothing");
+        addDesc("Ctrl-Q, Ctrl-W = Close the program immediately.");
 
         final JButton closeButton = new JButton("Close");
         closeButton.addActionListener(this);
@@ -190,8 +191,20 @@ class ActionHelpButton extends JDialog implements ActionListener {
         final JLabel label = new JLabel(
             "= " + text,
             Genetic.COMMAND_ICONS.get(c),
-            JLabel.HORIZONTAL);
-        label.setHorizontalAlignment(SwingConstants.LEFT);
+            JLabel.LEFT);
+        contentPane.add(label);
+        contentPane.add(Box.createVerticalStrut(GuiFrame.GAP));
+    }
+
+    /**
+     * Add custom description text (e.g. for a keybinding)
+     * 
+     * @param text description
+     */
+    private void addDesc(final String text) {
+        final JLabel label = new JLabel(
+            text,
+            JLabel.LEFT);
         contentPane.add(label);
         contentPane.add(Box.createVerticalStrut(GuiFrame.GAP));
     }

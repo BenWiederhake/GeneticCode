@@ -31,6 +31,9 @@ package genetic.gui;
 import genetic.data.Field;
 
 import java.awt.BorderLayout;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -43,7 +46,7 @@ import javax.swing.border.EmptyBorder;
  * 
  * @author Tim Wiederhake
  */
-public class GuiFrame extends JFrame implements Runnable {
+public class GuiFrame extends JFrame implements Runnable, KeyEventDispatcher {
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
 
@@ -109,6 +112,8 @@ public class GuiFrame extends JFrame implements Runnable {
         panel.add(horizontalSplit, BorderLayout.CENTER);
         panel.add(statusPane, BorderLayout.SOUTH);
 
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+            .addKeyEventDispatcher(this);
         setLocationByPlatform(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panel);
@@ -123,5 +128,35 @@ public class GuiFrame extends JFrame implements Runnable {
     @Override
     public final void run() {
         setVisible(true);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent e) {
+        /* Prevent accidental commands by requiring CTRL to be held */
+        if (!e.isControlDown()) {
+            /* We have not consumed the event */
+            return false;
+        }
+
+        /* Only register each command ONCE */
+        if (e.getID() != KeyEvent.KEY_RELEASED) {
+            /* We have not consumed the event */
+            return false;
+        }
+
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_Q:
+            case KeyEvent.VK_W:
+                /*
+                 * Using JFrame.EXIT_ON_CLOSE will result in exactly the same
+                 * call. Since we are using that flag, we should halt the
+                 * application the same way anything else would.
+                 */
+                System.exit(0);
+                return true;
+            default:
+                /* We have not consumed the event */
+                return false;
+        }
     }
 }
