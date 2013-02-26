@@ -1,11 +1,15 @@
 GeneticCode - A simple evolving code / automaton sandbox.
 Copyright (c) 2013, Tim Wiederhake
+Copyright (c) 2013, Ben Wiederhake
 
 Usage: java -jar GeneticCode.jar <OPTIONS>
 
 The following <OPTIONS> exits:
 --help: Displays this help.
 --license: Displays further information about the copyright.
+--seed <N>: Seed the random number generator with the given number.
+  Results are only guaranteed to be reproducible using
+  the same version on the same JVM and machine.
 --set <PARAM> <N>: Sets the simulation parameter <PARAM> to the integer
   value <N>, which is silently capped by the same minimum / maximum that
   is displayed in the GUI.
@@ -28,9 +32,22 @@ The following <OPTIONS> exits:
   * REPRODUCTION_HP: Health required before reproduction happens.
     Note that when a entity splits, both offsprings each have
     half the health of the original entity.
---seed <N>: Seed the random number generator with the given number.
-  Results are only guaranteed to be reproducible using
-  the same version on the same JVM and machine.
+--statistics <PATTERN> <FILENAME>: Open <FILENAME>, and write one
+  entry for each step, using the <PATTERN>.
+  The first entry is written directly after field initialization.
+  Each character will be treated literal. The escape character is %,
+  escape codes are case-sensitive. These escape codes are defined:
+  * %p, %P: current population
+  * %d, D: population difference to the previous step
+  * %g, %G: serial number of the step (starting with 0)
+  * %f, %F: amount of food (grass) available
+  * %%: literal percentage sign
+  * %n: newline (LF, on all platforms)
+  * %r: carriage return (CR)
+  Where both uppercase and lowercase variant is defined (%p, %d, %g, %f),
+  the lower case gives out 4 bytes little endian versions;
+  uppercase produces decimal digits in ASCII.
+  Note that you can use this flag multiple times
 
 If a flag is mentioned multiple times (for example: --seed 1 --seed 2),
 then the last occurrence will be used (i.e.: -seed 2) unless stated otherwise.

@@ -2,6 +2,7 @@
  * GeneticCode - A simple evolving code / automaton sandbox.
  * 
  * Copyright (c) 2013, Tim Wiederhake
+ * Copyright (c) 2013, Ben Wiederhake
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -32,6 +33,7 @@ import genetic.data.Command;
 import genetic.data.Field;
 import genetic.data.Parameter;
 import genetic.gui.Gui;
+import genetic.stat.Statistics;
 
 import java.awt.EventQueue;
 import java.io.IOException;
@@ -55,6 +57,13 @@ public final class Genetic {
 
     private static final double MS_PER_SECOND = 1000.0;
 
+    /**
+     * "Global" Statistics object that keeps track of who wants which kind of
+     * statistic about what.
+     */
+    /* Static initialization, but it's an empty constructor */
+    private static final Statistics STATISTICS = new Statistics();
+
     public static ImageIcon loadIcon(final String path) {
         return new ImageIcon(Genetic.class.getResource(path));
     }
@@ -72,6 +81,7 @@ public final class Genetic {
 
         /* load & prepare (in constructor) */
         final Field field = new Field();
+        STATISTICS.update(field);
 
         /* show the gui */
         final Gui guiFrame = new Gui(field);
@@ -88,6 +98,7 @@ public final class Genetic {
             }
 
             field.tick();
+            STATISTICS.update(field);
         }
     }
 
@@ -146,6 +157,20 @@ public final class Genetic {
                 poll(argIter, "--seed", 0, 1),
                 "--seed",
                 1));
+        } else if (flag.equals("--statistics")) {
+            final String pattern = poll(argIter, "--statistics", 0, 2);
+            final String filename = poll(argIter, "--statistics", 1, 2);
+            try {
+                STATISTICS.addStatisticsFile(filename, pattern);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Couldn't parse"
+                    + " \"--statistics "
+                    + pattern
+                    + " "
+                    + filename
+                    + "\" because:\n"
+                    + e.getMessage());
+            }
         } else {
             throw new IllegalArgumentException("Unrecognized option: " + flag);
         }

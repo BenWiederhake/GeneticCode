@@ -1,6 +1,7 @@
 GeneticCode - A simple evolving code / automaton sandbox.
 
 Copyright (c) 2013, Tim Wiederhake
+Copyright (c) 2013, Ben Wiederhake
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
