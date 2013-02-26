@@ -128,6 +128,7 @@ public class Gui implements Runnable, KeyEventDispatcher {
             true,
             verticalSplit,
             scrollField);
+        horizontalSplit.setOneTouchExpandable(true);
 
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -141,6 +142,7 @@ public class Gui implements Runnable, KeyEventDispatcher {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(panel);
         frame.pack();
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
     }
 }
