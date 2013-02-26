@@ -58,6 +58,12 @@ public final class Genetic {
     private static final double MS_PER_SECOND = 1000.0;
 
     /**
+     * When simulation is paused, wait this many milliseconds between checking
+     * whether the simulation is still paused.
+     */
+    private static final int PAUSE_SLEEP_PACE = 1000;
+
+    /**
      * "Global" Statistics object that keeps track of who wants which kind of
      * statistic about what.
      */
@@ -68,12 +74,30 @@ public final class Genetic {
 
     private static boolean goFast = false;
 
+    private static boolean paused = false;;
+
+    public static boolean isGoFast() {
+        return goFast;
+    }
+
+    public static void setGoFast(boolean goFast) {
+        Genetic.goFast = goFast;
+    }
+
+    public static boolean isPaused() {
+        return paused;
+    }
+
+    public static void setPaused(boolean paused) {
+        Genetic.paused = paused;
+    }
+
     /**
      * When stepLimit is &gt;= 0, then the step number stepLimit+1 won't be
      * reached, because the simulation terminates the VM before that.
      */
     private static int stepLimit = -1;
-    
+
     public static ImageIcon loadIcon(final String path) {
         return new ImageIcon(Genetic.class.getResource(path));
     }
@@ -101,18 +125,26 @@ public final class Genetic {
 
         /* Start the simulation */
         while (stepLimit < 0 || field.getStep() < stepLimit) {
-            if (!goFast) {
+            if (paused) {
                 try {
-                    final double sleepTime =
-                        MS_PER_SECOND / Parameter.SIMULATION_SPEED.getValue();
-                    Thread.sleep((int) sleepTime);
+                    Thread.sleep(PAUSE_SLEEP_PACE);
                 } catch (final InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
+            } else {
+                if (!goFast) {
+                    try {
+                        final double sleepTime = MS_PER_SECOND
+                            / Parameter.SIMULATION_SPEED.getValue();
+                        Thread.sleep((int) sleepTime);
+                    } catch (final InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-            field.tick();
-            STATISTICS.update(field);
+                field.tick();
+                STATISTICS.update(field);
+            }
         }
     }
 
@@ -202,6 +234,8 @@ public final class Genetic {
                 poll(argIter, "--exit-after", 0, 1),
                 "--exit-after",
                 1);
+        } else if (flag.equals("--paused")) {
+            paused = true;
         } else {
             throw new IllegalArgumentException("Unrecognized option: " + flag);
         }

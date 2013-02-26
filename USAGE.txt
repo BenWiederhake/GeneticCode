@@ -13,11 +13,12 @@ The following <OPTIONS> exits:
   Note, however, that only the last occurrence of this flag is used.
   Values below zero are interpreted as "don't halt"
 --go-fast: Ignores SIMULATION_SPEED, and goes as fast
-  as possible at the simulation. This can, in later versions,
+  as possible at the simulation. This can
   be changed again in the GUI.
 --help: Displays this help.
 --license: Displays further information about the copyright.
 --no-gui: Prevents the GUI from popping up.
+--paused: Start the simulation paused.
 --seed <N>: Seed the random number generator with the given number.
   Results are only guaranteed to be reproducible using
   the same version on the same JVM and machine.

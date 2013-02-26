@@ -44,6 +44,7 @@ import java.util.Scanner;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -52,6 +53,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -169,6 +171,10 @@ class ActionHelpButton extends JDialog implements ActionListener {
         addDesc(Command.SKIP2, "Skip two commands");
         addDesc(Command.SLEEP, "Do nothing");
         addDesc("Ctrl-Q, Ctrl-W = Close the program immediately.");
+        addDesc(Genetic.loadIcon(JStatusPane.IMG_PAUSE), "Pause Simulation");
+        addDesc(Genetic.loadIcon(JStatusPane.IMG_GO_FAST),
+            "Ignore simulation speed settings: " +
+                "Go as fast as possible.");
 
         final JButton closeButton = new JButton("Close");
         closeButton.addActionListener(this);
@@ -196,9 +202,19 @@ class ActionHelpButton extends JDialog implements ActionListener {
      * @param text description
      */
     private void addDesc(final Command c, final String text) {
+        addDesc(Genetic.COMMAND_ICONS.get(c), text);
+    }
+
+    /**
+     * Add description for anything with an ImageIcon.
+     * 
+     * @param icon accompanying icon describe
+     * @param text description
+     */
+    private void addDesc(final ImageIcon icon, final String text) {
         final JLabel label = new JLabel(
             "= " + text,
-            Genetic.COMMAND_ICONS.get(c),
+            icon,
             JLabel.LEFT);
         contentPane.add(label);
         contentPane.add(Box.createVerticalStrut(Gui.GAP));
@@ -231,6 +247,18 @@ class ActionHelpButton extends JDialog implements ActionListener {
 public class JStatusPane extends JPanel implements Observer {
     /** Not meant to be serialized. */
     private static final long serialVersionUID = 1L;
+
+    /** Location of the "pause" icon */
+    static final String IMG_PAUSE = "/genetic/res/pause.png";
+
+    /** Location of the "go fast" icon */
+    static final String IMG_GO_FAST = "/genetic/res/goFast.png";
+
+    /** Location of the "help" icon */
+    static final String IMG_HELP = "/genetic/res/questionmark.png";
+
+    /** Location of the "about" icon */
+    static final String IMG_ABOUT = "/genetic/res/businesscard.png";
 
     /** Static width of textfields in characters. */
     private static final int TEXTFIELD_WIDTH = 6;
@@ -288,15 +316,39 @@ public class JStatusPane extends JPanel implements Observer {
         stepLabel.setLabelFor(stepField);
         populationLabel.setLabelFor(populationField);
 
+        final JToggleButton pauseButton = new JToggleButton(
+            "Pause",
+            Genetic.loadIcon(IMG_PAUSE),
+            Genetic.isPaused());
+        pauseButton.setFocusPainted(false);
+        pauseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Genetic.setPaused(pauseButton.isSelected());
+            }
+        });
+
+        final JToggleButton goFastButton = new JToggleButton(
+            "Go Fast",
+            Genetic.loadIcon(IMG_GO_FAST),
+            Genetic.isGoFast());
+        goFastButton.setFocusPainted(false);
+        goFastButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Genetic.setGoFast(goFastButton.isSelected());
+            }
+        });
+
         final JButton helpButton = new JButton(
             "Help",
-            Genetic.loadIcon("/genetic/res/questionmark.png"));
-        final JButton aboutButton = new JButton(
-            "About",
-            Genetic.loadIcon("/genetic/res/businesscard.png"));
-
+            Genetic.loadIcon(IMG_HELP));
         helpButton.addActionListener(new ActionHelpButton(parentFrame));
         helpButton.setFocusPainted(false);
+
+        final JButton aboutButton = new JButton(
+            "About",
+            Genetic.loadIcon(IMG_ABOUT));
         aboutButton.addActionListener(new ActionAboutButton(parentFrame));
         aboutButton.setFocusPainted(false);
 
@@ -309,6 +361,10 @@ public class JStatusPane extends JPanel implements Observer {
         labelPane.add(populationDiffField);
 
         final JPanel buttonPane = new JPanel();
+        buttonPane.add(pauseButton);
+        buttonPane.add(Box.createHorizontalStrut(Gui.GAP * 2));
+        buttonPane.add(goFastButton);
+        buttonPane.add(Box.createHorizontalStrut(Gui.GAP * 2));
         buttonPane.add(helpButton);
         buttonPane.add(Box.createHorizontalStrut(Gui.GAP * 2));
         buttonPane.add(aboutButton);
