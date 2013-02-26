@@ -11,6 +11,8 @@
 		<copy todir="bin/genetic/res">
 			<fileset dir="src/genetic/res" includes="*" />
 		</copy>
+		<copy file="LICENSE.txt" tofile="bin/LICENSE.txt" />
+		<copy file="USAGE.txt" tofile="bin/USAGE.txt" />
 	</target>
 
 	<target name="jar" depends="compile">

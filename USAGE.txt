@@ -1,0 +1,11 @@
+GeneticCode - A simple evolving code / automaton sandbox.
+Copyright (c) 2013, Tim Wiederhake
+
+Usage: java -jar GeneticCode.jar <OPTIONS>
+
+The following <OPTIONS> exits:
+--help: Displays this help.
+--license: Displays further information about the copyright.
+
+If a flag is mentioned multiple times (for example: --seed 1 --seed 2),
+then the last occurrence will be used (i.e.: -seed 2) unless stated otherwise.
