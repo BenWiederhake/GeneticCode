@@ -91,6 +91,9 @@ public class Gui implements Runnable, KeyEventDispatcher {
             case KeyEvent.VK_P:
                 Genetic.setPaused(!Genetic.isPaused());
                 return true;
+            case KeyEvent.VK_R:
+                field.reset();
+                return true;
             default:
                 /* We have not consumed the event */
                 return false;

@@ -173,6 +173,8 @@ class ActionHelpButton extends JDialog implements ActionListener {
         addDesc("Ctrl-Q, Ctrl-W = Close the program immediately.");
         addDesc(Genetic.loadIcon(JStatusPane.IMG_PAUSE),
             "Pause/Unpause Simulation (or Ctrl-P)");
+        addDesc(Genetic.loadIcon(JStatusPane.IMG_RESET),
+        "Reset Simulation (or Ctrl-R)");
         addDesc(Genetic.loadIcon(JStatusPane.IMG_GO_FAST),
             "Ignore simulation speed settings: " +
                 "Go as fast as possible.");
@@ -254,6 +256,9 @@ public class JStatusPane extends JPanel implements Observer {
 
     /** Location of the "go fast" icon */
     static final String IMG_GO_FAST = "/genetic/res/goFast.png";
+
+    /** Location of the "reset" icon */
+    static final String IMG_RESET = "/genetic/res/reset.png";
 
     /** Location of the "help" icon */
     static final String IMG_HELP = "/genetic/res/questionmark.png";
@@ -341,6 +346,17 @@ public class JStatusPane extends JPanel implements Observer {
             }
         });
 
+        final JButton resetButton = new JButton(
+            "Reset",
+            Genetic.loadIcon(IMG_RESET));
+        resetButton.setFocusPainted(false);
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                field.reset();
+            }
+        });
+
         final JButton helpButton = new JButton(
             "Help",
             Genetic.loadIcon(IMG_HELP));
@@ -366,6 +382,8 @@ public class JStatusPane extends JPanel implements Observer {
         buttonPane.add(Box.createHorizontalStrut(Gui.GAP * 2));
         buttonPane.add(goFastButton);
         buttonPane.add(Box.createHorizontalStrut(Gui.GAP * 2));
+        buttonPane.add(resetButton);
+        buttonPane.add(Box.createHorizontalStrut(Gui.GAP * 2));
         buttonPane.add(helpButton);
         buttonPane.add(Box.createHorizontalStrut(Gui.GAP * 2));
         buttonPane.add(aboutButton);
@@ -379,6 +397,7 @@ public class JStatusPane extends JPanel implements Observer {
     protected final Object clone() throws CloneNotSupportedException {
         throw new CloneNotSupportedException();
     }
+
 
     @Override
     public final void update(final Observable o, final Object arg) {

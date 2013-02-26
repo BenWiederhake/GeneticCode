@@ -45,6 +45,10 @@ public class Field extends Observable {
 
     private int step;
 
+    private int width;
+
+    private int height;
+
     public Field() {
         this.grass = new CopyOnWriteArraySet<Point>();
         this.wall = new CopyOnWriteArraySet<Point>();
@@ -59,9 +63,9 @@ public class Field extends Observable {
         entities.clear();
         step = 0;
 
-        final int fieldWidth = Parameter.FIELD_WIDTH.getValue();
-        final int fieldHeight = Parameter.FIELD_HEIGHT.getValue();
-        final int fieldSize = fieldWidth * fieldHeight;
+        width = Parameter.FIELD_WIDTH.getValue();
+        height = Parameter.FIELD_HEIGHT.getValue();
+        final int fieldSize = width * height;
 
         /* place initial food */
         final int foodCount = (fieldSize * Parameter.INITIAL_FOOD.getValue())
@@ -113,8 +117,6 @@ public class Field extends Observable {
     }
 
     public final Point getRandomValidPoint() {
-        final int width = Parameter.FIELD_WIDTH.getValue();
-        final int height = Parameter.FIELD_HEIGHT.getValue();
         final int x = Parameter.getNextRandomInt(width);
         final int y = Parameter.getNextRandomInt(height);
         return new Point(x, y);
@@ -122,6 +124,14 @@ public class Field extends Observable {
 
     public final int getStep() {
         return step;
+    }
+
+    public final int getWidth() {
+        return width;
+    }
+
+    public final int getHeight() {
+        return height;
     }
 
     public Point getTargetCoordinates(final Entity entity) {
@@ -165,8 +175,6 @@ public class Field extends Observable {
      * @throws NullPointerException if the given point was <code>null</code>
      */
     public final Point sanitizeCoordinates(final Point p) {
-        final int width = Parameter.FIELD_WIDTH.getValue();
-        final int height = Parameter.FIELD_HEIGHT.getValue();
         if (p.x < 0) {
             return sanitizeCoordinates(new Point(p.x + width, p.y));
         }

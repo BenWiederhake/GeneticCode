@@ -48,19 +48,19 @@ import javax.swing.event.ChangeListener;
  */
 public enum Parameter implements BoundedRangeModel {
     /** Field width. */
-    FIELD_WIDTH("Field width", 1, 200, 512, false),
+    FIELD_WIDTH("Field width", 1, 200, 512, true),
 
     /** Field height. */
-    FIELD_HEIGHT("Field height", 1, 200, 512, false),
+    FIELD_HEIGHT("Field height", 1, 200, 512, true),
 
     /** How much food there is on the field initially, in percent. */
-    INITIAL_FOOD("Initial food on the field in percent", 0, 25, 100, false),
+    INITIAL_FOOD("Initial food on the field in percent", 0, 25, 100, true),
 
     /** How many walls are there initially, in percent. */
-    INITIAL_WALL("Initial walls on the field in percent", 0, 1, 100, false),
+    INITIAL_WALL("Initial walls on the field in percent", 0, 1, 100, true),
 
     /** How big the start population is. */
-    INITIAL_POPULATION("Initial population size", 1, 100, 1000, false),
+    INITIAL_POPULATION("Initial population size", 1, 100, 1000, true),
 
     /** Scale to display the field. */
     FIELD_SCALE("Field scale", 1, 4, 20, true),

@@ -104,8 +104,8 @@ public class JFieldPane extends JPanel implements Observer {
 
     @Override
     public final Dimension getPreferredSize() {
-        final int width = Parameter.FIELD_WIDTH.getValue() * scale;
-        final int height = Parameter.FIELD_HEIGHT.getValue() * scale;
+        final int width = field.getWidth() * scale;
+        final int height = field.getHeight() * scale;
 
         return new Dimension(
             width + gridGap + (Gui.GAP * 2),
@@ -150,8 +150,8 @@ public class JFieldPane extends JPanel implements Observer {
 
         super.paint(g);
         final Graphics2D g2 = (Graphics2D) g;
-        final int fieldWidth = Parameter.FIELD_WIDTH.getValue();
-        final int fieldHeight = Parameter.FIELD_HEIGHT.getValue();
+        final int fieldWidth = field.getWidth();
+        final int fieldHeight = field.getHeight();
 
         g2.translate(Gui.GAP, Gui.GAP);
 
