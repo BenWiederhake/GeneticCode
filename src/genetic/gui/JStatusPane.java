@@ -79,7 +79,13 @@ class ActionAboutButton extends JDialog implements ActionListener {
 
         final InputStream input = ActionAboutButton.class.getResourceAsStream(
             "/genetic/res/license.html");
-        final String text = new Scanner(input).useDelimiter("\\Z").next();
+        final String text;
+        {
+            final Scanner scanner = new Scanner(input);
+            scanner.useDelimiter("\\Z");
+            text = scanner.next();
+            scanner.close();
+        }
         final JEditorPane editorPane = new JEditorPane("text/html", text);
         editorPane.setEditable(false);
         editorPane.setOpaque(false);
