@@ -107,6 +107,10 @@ public enum Parameter implements BoundedRangeModel {
         return RANDOM.nextInt(max);
     }
 
+    public static final void setRNGSeed(long seed) {
+        RANDOM.setSeed(seed);
+    }
+
     /** Pretty name. */
     private final String title;
 

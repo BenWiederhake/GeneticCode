@@ -141,6 +141,11 @@ public final class Genetic {
              */
             final Parameter p = Parameter.valueOf(paramName);
             p.setValue(value);
+        } else if ("--seed".equals(flag)) {
+            Parameter.setRNGSeed(parseLong(
+                poll(argIter, "--seed", 0, 1),
+                "--seed",
+                1));
         } else {
             throw new IllegalArgumentException("Unrecognized option: " + flag);
         }
@@ -198,6 +203,40 @@ public final class Genetic {
     {
         try {
             return Integer.parseInt(what);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Couldn't parse argument #"
+                + argNo
+                + " to "
+                + flag
+                + ":\nExpected integer value, found \""
+                + what
+                + "\" instead ("
+                + e.getLocalizedMessage()
+                + ").");
+        }
+    }
+
+    /**
+     * Tries to interpret <code>what</code> as an long and returns it. If
+     * something goes wrong, it throws an exception with information about the
+     * error.
+     * 
+     * @param what the string to parse as an long
+     * @param flag the flag whose argument we are currently parsing. Only used
+     *            for error detail information.
+     * @param argNo the number of this flag-argument. Only used for error detail
+     *            information.
+     * @return the represented long
+     * @throws IllegalArgumentException if <code>what</code> did not represent a
+     *             valid long.
+     */
+    private static long parseLong(
+        final String what,
+        final String flag,
+        final int argNo)
+    {
+        try {
+            return Long.parseLong(what);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Couldn't parse argument #"
                 + argNo
