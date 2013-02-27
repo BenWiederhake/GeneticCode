@@ -84,9 +84,11 @@ public class Field extends Observable {
         }
 
         /* place initial population */
-        for (int i = 0; i < Parameter.INITIAL_POPULATION.getValue(); ++i) {
+        final int population = Parameter.INITIAL_POPULATION.getValue();
+        final int health = Parameter.INITIAL_HEALTH.getValue();
+        for (int i = 0; i < population; ++i) {
             addEntity(new Entity(
-                100,
+                health,
                 new Program(Command.MOVE),
                 getRandomValidPoint(),
                 Direction.getRandom()));

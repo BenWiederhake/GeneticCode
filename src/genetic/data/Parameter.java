@@ -59,6 +59,9 @@ public enum Parameter implements BoundedRangeModel {
     /** How many walls are there initially, in percent. */
     INITIAL_WALL("Initial walls on the field in percent", 0, 1, 100, true),
 
+    /** The amount of health the first entities will be initialized with */
+    INITIAL_HEALTH("Initial health", 1, 100, 150, true),
+
     /** How big the start population is. */
     INITIAL_POPULATION("Initial population size", 1, 100, 1000, true),
 
