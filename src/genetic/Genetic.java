@@ -31,7 +31,7 @@ package genetic;
 import genetic.data.Command;
 import genetic.data.Field;
 import genetic.data.Parameter;
-import genetic.gui.GuiFrame;
+import genetic.gui.Gui;
 
 import java.awt.EventQueue;
 import java.util.HashMap;
@@ -59,7 +59,7 @@ public final class Genetic {
         final Field field = new Field();
 
         /* show the gui */
-        final GuiFrame guiFrame = new GuiFrame(field);
+        final Gui guiFrame = new Gui(field);
         EventQueue.invokeLater(guiFrame);
 
         /* start the simulation */

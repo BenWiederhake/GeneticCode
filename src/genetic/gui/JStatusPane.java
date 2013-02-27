@@ -46,6 +46,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -71,10 +72,10 @@ class ActionAboutButton extends JDialog implements ActionListener {
     /**
      * Create a new ActionAboutButton.
      * 
-     * @param guiFrame parent frame
+     * @param parentFrame parent frame
      */
-    public ActionAboutButton(final GuiFrame guiFrame) {
-        super(guiFrame);
+    public ActionAboutButton(final JFrame parentFrame) {
+        super(parentFrame);
 
         final InputStream input = ActionAboutButton.class.getResourceAsStream(
             "/genetic/res/license.html");
@@ -94,7 +95,7 @@ class ActionAboutButton extends JDialog implements ActionListener {
 
         setTitle("About GeneticCode");
         setSize(DEFAULT_SIZE);
-        setLocationRelativeTo(guiFrame);
+        setLocationRelativeTo(parentFrame);
     }
 
     @Override
@@ -132,17 +133,17 @@ class ActionHelpButton extends JDialog implements ActionListener {
     /**
      * Create a new ActionHelpButton.
      * 
-     * @param guiFrame parent frame
+     * @param parentFrame parent frame
      */
-    public ActionHelpButton(final GuiFrame guiFrame) {
-        super(guiFrame);
+    public ActionHelpButton(final JFrame parentFrame) {
+        super(parentFrame);
         contentPane = new JPanel();
         contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         contentPane.setBorder(new EmptyBorder(
-            GuiFrame.GAP,
-            GuiFrame.GAP,
-            GuiFrame.GAP,
-            GuiFrame.GAP));
+            Gui.GAP,
+            Gui.GAP,
+            Gui.GAP,
+            Gui.GAP));
 
         addDesc(Command.DOUBLEMOVE, "Move two steps forward");
         addDesc(Command.MOVE, "Move one step forward");
@@ -172,7 +173,7 @@ class ActionHelpButton extends JDialog implements ActionListener {
         add(buttonPane, BorderLayout.SOUTH);
         setTitle("Icon reference");
         setSize(DEFAULT_SIZE);
-        setLocationRelativeTo(guiFrame);
+        setLocationRelativeTo(parentFrame);
     }
 
     @Override
@@ -193,7 +194,7 @@ class ActionHelpButton extends JDialog implements ActionListener {
             Genetic.COMMAND_ICONS.get(c),
             JLabel.LEFT);
         contentPane.add(label);
-        contentPane.add(Box.createVerticalStrut(GuiFrame.GAP));
+        contentPane.add(Box.createVerticalStrut(Gui.GAP));
     }
 
     /**
@@ -206,7 +207,7 @@ class ActionHelpButton extends JDialog implements ActionListener {
             text,
             JLabel.LEFT);
         contentPane.add(label);
-        contentPane.add(Box.createVerticalStrut(GuiFrame.GAP));
+        contentPane.add(Box.createVerticalStrut(Gui.GAP));
     }
 
     @Override
@@ -240,9 +241,9 @@ public class JStatusPane extends JPanel implements Observer {
      * Create a new JStatusPane.
      * 
      * @param field simulation field
-     * @param guiFrame parent frame
+     * @param parentFrame parent frame
      */
-    public JStatusPane(final Field field, final GuiFrame guiFrame) {
+    public JStatusPane(final Field field, final JFrame parentFrame) {
         this.stepField = new JTextField(TEXTFIELD_WIDTH);
         this.populationField = new JTextField(TEXTFIELD_WIDTH);
         this.field = field;
@@ -270,21 +271,21 @@ public class JStatusPane extends JPanel implements Observer {
             "About",
             Genetic.loadIcon("/genetic/res/businesscard.png"));
 
-        helpButton.addActionListener(new ActionHelpButton(guiFrame));
+        helpButton.addActionListener(new ActionHelpButton(parentFrame));
         helpButton.setFocusPainted(false);
-        aboutButton.addActionListener(new ActionAboutButton(guiFrame));
+        aboutButton.addActionListener(new ActionAboutButton(parentFrame));
         aboutButton.setFocusPainted(false);
 
         final JPanel labelPane = new JPanel();
         labelPane.add(stepLabel);
         labelPane.add(stepField);
-        labelPane.add(Box.createHorizontalStrut(GuiFrame.GAP * 2));
+        labelPane.add(Box.createHorizontalStrut(Gui.GAP * 2));
         labelPane.add(populationLabel);
         labelPane.add(populationField);
 
         final JPanel buttonPane = new JPanel();
         buttonPane.add(helpButton);
-        buttonPane.add(Box.createHorizontalStrut(GuiFrame.GAP * 2));
+        buttonPane.add(Box.createHorizontalStrut(Gui.GAP * 2));
         buttonPane.add(aboutButton);
 
         setLayout(new BorderLayout());

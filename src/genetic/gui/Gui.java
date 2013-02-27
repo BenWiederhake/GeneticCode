@@ -42,41 +42,64 @@ import javax.swing.JSplitPane;
 import javax.swing.border.EmptyBorder;
 
 /**
- * GeneticCode main gui frame.
+ * GeneticCode main gui.
  * 
  * @author Tim Wiederhake
  */
-public class GuiFrame extends JFrame implements Runnable, KeyEventDispatcher {
-    /** Not meant to be serialized. */
-    private static final long serialVersionUID = 1L;
-
+public class Gui implements Runnable, KeyEventDispatcher {
     /** Default space between elements. */
     public static final int GAP = 5;
 
-    /** Displays the field. */
-    private final JFieldPane fieldPane;
-
-    /** Displays the settings. */
-    private final JSettingsPane settingsPane;
-
-    /** Displays the program statistics. */
-    private final JProgramStatTable programStatTable;
-
-    /** Displays the status. */
-    private final JStatusPane statusPane;
+    /** Simulation field. */
+    private final Field field;
 
     /**
      * Create a new GuiFrame.
      * 
      * @param field simulation field to display
      */
-    public GuiFrame(final Field field) {
-        super("Genetic Code");
+    public Gui(final Field field) {
+        this.field = field;
+    }
 
-        this.settingsPane = new JSettingsPane(false);
-        this.fieldPane = new JFieldPane(field);
-        this.statusPane = new JStatusPane(field, this);
-        this.programStatTable = new JProgramStatTable(field);
+    @Override
+    public final boolean dispatchKeyEvent(final KeyEvent e) {
+        /* Prevent accidental commands by requiring CTRL to be held */
+        if (!e.isControlDown()) {
+            /* We have not consumed the event */
+            return false;
+        }
+
+        /* Only register each command ONCE */
+        if (e.getID() != KeyEvent.KEY_RELEASED) {
+            /* We have not consumed the event */
+            return false;
+        }
+
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_Q:
+            case KeyEvent.VK_W:
+                /*
+                 * Using JFrame.EXIT_ON_CLOSE will result in exactly the same
+                 * call. Since we are using that flag, we should halt the
+                 * application the same way anything else would.
+                 */
+                System.exit(0);
+                return true;
+            default:
+                /* We have not consumed the event */
+                return false;
+        }
+    }
+
+    @Override
+    public final void run() {
+        final JFrame frame = new JFrame("Genetic Code");
+
+        final JFieldPane fieldPane = new JFieldPane(field);
+        final JSettingsPane settingsPane = new JSettingsPane(false);
+        final JProgramStatTable programStatTable = new JProgramStatTable(field);
+        final JStatusPane statusPane = new JStatusPane(field, frame);
 
         final JScrollPane scrollSettings = new JScrollPane(
             settingsPane,
@@ -114,49 +137,10 @@ public class GuiFrame extends JFrame implements Runnable, KeyEventDispatcher {
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
             .addKeyEventDispatcher(this);
-        setLocationByPlatform(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setContentPane(panel);
-        pack();
-    }
-
-    @Override
-    protected final Object clone() throws CloneNotSupportedException {
-        throw new CloneNotSupportedException();
-    }
-
-    @Override
-    public final void run() {
-        setVisible(true);
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent e) {
-        /* Prevent accidental commands by requiring CTRL to be held */
-        if (!e.isControlDown()) {
-            /* We have not consumed the event */
-            return false;
-        }
-
-        /* Only register each command ONCE */
-        if (e.getID() != KeyEvent.KEY_RELEASED) {
-            /* We have not consumed the event */
-            return false;
-        }
-
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_Q:
-            case KeyEvent.VK_W:
-                /*
-                 * Using JFrame.EXIT_ON_CLOSE will result in exactly the same
-                 * call. Since we are using that flag, we should halt the
-                 * application the same way anything else would.
-                 */
-                System.exit(0);
-                return true;
-            default:
-                /* We have not consumed the event */
-                return false;
-        }
+        frame.setLocationByPlatform(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(panel);
+        frame.pack();
+        frame.setVisible(true);
     }
 }

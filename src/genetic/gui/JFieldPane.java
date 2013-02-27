@@ -107,8 +107,8 @@ public class JFieldPane extends JPanel implements Observer {
         final int height = Parameter.FIELD_HEIGHT.getValue() * scale;
 
         return new Dimension(
-            width + gridGap + (GuiFrame.GAP * 2),
-            height + gridGap + (GuiFrame.GAP * 2));
+            width + gridGap + (Gui.GAP * 2),
+            height + gridGap + (Gui.GAP * 2));
     }
 
     /**
@@ -152,7 +152,7 @@ public class JFieldPane extends JPanel implements Observer {
         final int fieldWidth = Parameter.FIELD_WIDTH.getValue();
         final int fieldHeight = Parameter.FIELD_HEIGHT.getValue();
 
-        g2.translate(GuiFrame.GAP, GuiFrame.GAP);
+        g2.translate(Gui.GAP, Gui.GAP);
 
         /* grid */
         if (Parameter.GRID_VISIBILITY.getValue() != 0 && gridGap > 0) {
